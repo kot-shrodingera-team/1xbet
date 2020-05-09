@@ -1,7 +1,7 @@
 import { log } from '../logger';
-import { auth, checkAuth } from './auth';
+import { authX, checkAuth } from './auth';
 import { updateBalance } from './balance';
-import { awaiter } from '@kot-shrodingera-team/config/util';
+import { getElement } from '@kot-shrodingera-team/config/util';
 
 export async function init(): Promise<void> {
   if (worker.LoginTry > 3) {
@@ -9,8 +9,8 @@ export async function init(): Promise<void> {
     worker.Islogin = false;
     return;
   }
-
-  await awaiter(waitCoupon as any);
+  await getElement('#loc_info', 3000);
+  await getElement('.games_content', 2000);
   if (checkAuth()) {
     log('Вы успешно авторизованы');
     worker.Islogin = true;
@@ -18,13 +18,9 @@ export async function init(): Promise<void> {
     updateBalance();
     return;
   } else {
-    auth(worker.Login, worker.Password);
+    await authX(worker.Login, worker.Password);
     log('Попытка авторизоваться № ' + worker.LoginTry);
     worker.LoginTry++;
     return;
   }
-}
-
-function waitCoupon(): Boolean {
-  return Boolean(document.querySelector('.coupon__bets'));
 }
