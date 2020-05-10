@@ -18,6 +18,7 @@ export async function init(): Promise<void> {
     updateBalance();
     return;
   } else {
+    await getElement('.footerColumnMenu', 2000);
     await authX(worker.Login, worker.Password);
     log('Попытка авторизоваться № ' + worker.LoginTry);
     worker.LoginTry++;
