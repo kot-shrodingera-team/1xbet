@@ -1,8 +1,8 @@
 import { log } from '../logger';
 import {
   fireEvent,
-  sleep,
   getElement,
+  sleep,
 } from '@kot-shrodingera-team/config/util';
 
 export async function authX(login: string, pass: string): Promise<boolean> {
@@ -36,7 +36,9 @@ export async function authX(login: string, pass: string): Promise<boolean> {
   passwordForm.value = pass;
   fireEvent(loginForm, 'input');
   fireEvent(passwordForm, 'input');
+
   if (submitButton) {
+    await sleep(600);
     submitButton.click();
     log('Кнопка при авторизации нажата.');
     return true;
