@@ -1,7 +1,8 @@
 import { log } from '../logger';
 import { checkAuth } from './auth';
 import { updateBalance } from './balance';
-import { getElement } from '@kot-shrodingera-team/config/util';
+import { getElement, sleep } from '@kot-shrodingera-team/config/util';
+import { clearCoupon, getStakeCount } from '../stake-functions';
 
 export async function showStake(): Promise<void> {
   if (typeof worker == 'undefined') {
@@ -10,7 +11,17 @@ export async function showStake(): Promise<void> {
   }
   log('Ожидаем загрузку страницы');
   await waitLoadPage();
+  log('Ожидаем загрузку coupon_content');
+  await getElement('.coupon__content', 3000);
+  log('Очищаем купон');
+  clearCoupon();
+  await sleep(500);
+  if (getStakeCount() > 1) {
+    log('Ошибка очистки! Купонов больше 1.');
+    return;
+  }
 }
+function openCoupon() {}
 
 async function waitLoadPage(): Promise<void> {
   await getElement('#loc_info', 3000);
