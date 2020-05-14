@@ -16,7 +16,7 @@ export function getStakeInfo(): string {
   worker.StakeInfo.StakeCount = getStakeCount();
   worker.StakeInfo.Balance = getBalance();
   worker.StakeInfo.MinSumm = getMinStake();
-  worker.StakeInfo.MaxSumm = 500; //getMaxStake();
+  worker.StakeInfo.MaxSumm = getMaxStake();
   worker.StakeInfo.Summ = getSumFromStake();
   worker.StakeInfo.IsEnebled = checkIsEnabled();
   if (worker.StakeInfo.StakeCount === 1) {
