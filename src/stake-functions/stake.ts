@@ -70,8 +70,35 @@ export function getCoefFromCoupon(): number {
   return Number(coef.textContent);
 }
 
-export function getParametrFromCoupon(): number {
-  return NaN;
+export function getParametrFromCoupon(): string {
+  const param = document.querySelector('.c-bet-box__market');
+  if (!param) {
+    log('Не найдены параметры');
+    return '0';
+  }
+
+  if (param.textContent.toUpperCase().includes('ТОТАЛ.')) {
+    log('Нашли тотал параметр с точкой');
+    return param.textContent.split(' ')[4];
+  }
+
+  if (param.textContent.toUpperCase().includes('ТОТАЛ')) {
+    log('Нашли тотал параметр');
+    return param.textContent.split(' ')[1];
+  }
+
+  if (param.textContent.toUpperCase().includes('ФОРА')) {
+    log('Нашли параметр Фора');
+    const searchStr = param.textContent.match(/\((.*)\)/);
+    return searchStr[1];
+  }
+
+  if (param.textContent.toUpperCase().includes('ИТ')) {
+    log('Нашли параметр ИТ');
+    return param.textContent.split(' ')[1];
+  }
+
+  return '-6666';
 }
 
 export function checkIsEnabled(): boolean {
