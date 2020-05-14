@@ -15,6 +15,7 @@ export function getMaxStake(): number {
   log('Поле максимальной ставки не найдено');
   return 0;
 }
+
 export function clearCoupon(): void {
   const clearButton = document.querySelector(
     '.coupon__bets button'
