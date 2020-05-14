@@ -10,7 +10,7 @@ export async function init(): Promise<void> {
     return;
   }
   await getElement('#loc_info', 3000);
-  await getElement('.games_content', 2000);
+  await getElement('.games_content', 5000);
   if (checkAuth()) {
     log('Вы успешно авторизованы');
     worker.Islogin = true;
@@ -18,7 +18,7 @@ export async function init(): Promise<void> {
     updateBalance();
     return;
   } else {
-    await getElement('.footerColumnMenu', 2000);
+    await getElement('#cxl-badge', 5000);
     await authX(worker.Login, worker.Password);
     log('Попытка авторизоваться № ' + worker.LoginTry);
     worker.LoginTry++;
