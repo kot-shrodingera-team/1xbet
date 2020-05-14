@@ -21,7 +21,7 @@ export function getStakeInfo(): string {
   worker.StakeInfo.IsEnebled = checkIsEnabled();
   if (worker.StakeInfo.StakeCount === 1) {
     worker.StakeInfo.Coef = getCoefFromCoupon();
-    worker.StakeInfo.Parametr = getParametrFromCoupon();
+    worker.StakeInfo.Parametr = Number(getParametrFromCoupon());
   } else {
     log('Ошибка в кол-ве открытых купонов!');
     return;
