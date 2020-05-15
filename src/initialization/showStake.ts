@@ -20,8 +20,27 @@ export async function showStake(): Promise<void> {
     log('Ошибка очистки! Купонов больше 1.');
     return;
   }
+  openCoupon();
+  await getElement('.coupon__content', 1000);
+  if (getStakeCount() === 1) {
+    log('Купон открыт!');
+    worker.JSStop();
+  }
+  return;
 }
-function openCoupon() {}
+async function openCoupon() {
+  const betId = worker.BetId.split('|');
+  const couponButton = document.querySelector(
+    `span[data-type="${betId[3]}"]`
+  ) as HTMLButtonElement;
+  if (couponButton) {
+    log('Пытаемся открыть купон');
+    couponButton.click();
+  } else {
+    log('Кнопка открытия купона не найдена, возможно событие закрыто.');
+    worker.JSFail();
+  }
+}
 
 async function waitLoadPage(): Promise<void> {
   await getElement('#loc_info', 3000);
