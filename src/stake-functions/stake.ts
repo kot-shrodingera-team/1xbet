@@ -23,14 +23,19 @@ export function clearCoupon(): void {
   const clearAllButton = document.querySelector(
     '.coupon__settings button'
   ) as HTMLButtonElement;
+  if (getStakeCount() === 0) {
+    log('Открытых купонов нет');
+    return;
+  }
   if (getStakeCount() > 1) {
     log('Купонов больше 1 жмем кнопку "Очистить все"');
     clearAllButton.click();
+    return;
   } else {
     log('Очищаем один купон');
     clearButton.click();
+    return;
   }
-  log('Кнопка "Очистить купон не найдена" ');
 }
 
 export function checkStakeLoad(): boolean {
@@ -57,17 +62,18 @@ export function getSumFromStake(): number {
   log(`Инпут не найден ${getSumFromStake.name}`);
   return 0;
 }
+
 export function getCoefFromCoupon(): number {
-  const coef = document.querySelector('.odds__value.odds__value--original');
+  const coef = document.querySelector('.coupon__end-coef');
   if (!coef) {
     log('Ошибка парсинга коэффициента, коэффициент не найден.');
     return 0;
   }
-  if (isNaN(Number(coef.textContent))) {
+  if (isNaN(Number(coef.textContent.trim()))) {
     log(`Коэффициент не удалось распарсить в число: ${coef.textContent}`);
     return 0;
   }
-  return Number(coef.textContent);
+  return Number(coef.textContent.trim());
 }
 
 export function getParametrFromCoupon(): string {
