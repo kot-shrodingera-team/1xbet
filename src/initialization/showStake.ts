@@ -10,16 +10,29 @@ export async function showStake(): Promise<void> {
     location.reload();
   }
   log('Ожидаем загрузку страницы');
+  if (document.querySelector('.error_page')) {
+    worker.JSFail();
+    log('Такой ставки уже не существует!');
+    return;
+  }
   await waitLoadPage();
+
   log('Ожидаем загрузку coupon_content');
-  await getElement('.coupon__content', 3000);
+  await getElement('.coupon__content', 2000);
+  const buttons = document.querySelectorAll('.bet-title');
   log('Очищаем купон');
   clearCoupon();
   await sleep(500);
-  if (getStakeCount() > 1) {
-    log('Ошибка очистки! Купонов больше 1.');
+  if (getStakeCount() >= 1) {
+    log('Ошибка очистки! Есть открытые купоны!');
     return;
   }
+
+  for (const button of buttons) {
+    await sleep(100);
+    (button as HTMLButtonElement).click();
+  }
+
   openCoupon();
   await getElement('.coupon__content', 1000);
   if (getStakeCount() === 1) {
@@ -28,7 +41,7 @@ export async function showStake(): Promise<void> {
   }
   return;
 }
-async function openCoupon() {
+function openCoupon() {
   const betId = worker.BetId.split('|');
   const couponButton = document.querySelector(
     `span[data-type="${betId[3]}"]`
@@ -36,14 +49,15 @@ async function openCoupon() {
   if (couponButton) {
     log('Пытаемся открыть купон');
     couponButton.click();
+    return;
   } else {
     log('Кнопка открытия купона не найдена, возможно событие закрыто.');
     worker.JSFail();
+    return;
   }
 }
 
 async function waitLoadPage(): Promise<void> {
-  await getElement('#loc_info', 3000);
-  await getElement('.games_content', 5000);
-  await getElement('#cxl-badge', 5000);
+  await getElement('.bets_content betsscroll', 3000);
+  await getElement('#sports_right', 2000);
 }
