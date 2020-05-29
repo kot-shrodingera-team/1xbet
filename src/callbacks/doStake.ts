@@ -1,7 +1,7 @@
 import { log } from '../logger';
 export function doStake(): boolean {
   const button = document.querySelector(
-    'div.footer-controls > div > button'
+    '.coupon-btn-group__item .c-btn'
   ) as HTMLButtonElement;
   if (button) {
     button.click();
