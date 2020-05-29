@@ -14,3 +14,8 @@ worker.SetCallBacks(
   callback.checkCouponLoading,
   callback.checkStakeStatus
 );
+function fastLoad() {
+  worker.Helper.LoadUrl(worker.EventUrl.replace(/_/g, '-'));
+}
+
+worker.SetFastCallback(fastLoad);
