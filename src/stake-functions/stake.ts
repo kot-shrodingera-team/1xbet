@@ -47,7 +47,7 @@ export function checkMarketLoad(): boolean {
 }
 
 export function getStakeCount(): number {
-  log(`Получен ${getStakeCount.name}`);
+  log(`Получен getStakeCount`);
   return document.querySelectorAll('.c-bet-box').length;
 }
 
@@ -59,7 +59,7 @@ export function getSumFromStake(): number {
     log('Получили сумму из купона');
     return Number(input.value);
   }
-  log(`Инпут не найден ${getSumFromStake.name}`);
+  log(`Инпут не найден getSumFromStake`);
   return 0;
 }
 
