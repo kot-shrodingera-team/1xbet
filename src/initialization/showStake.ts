@@ -29,7 +29,7 @@ export async function showStake(): Promise<void> {
   clearCoupon();
 
   await awaiter(() => getStakeCount() === 0, 1000);
-  await getElement('.c-bet-box', 2000);
+  await getElement('.c-bet-box__bet', 2500);
   log('Ожидаем загрузку коэфа');
 
   if (getStakeCount() >= 1) {
