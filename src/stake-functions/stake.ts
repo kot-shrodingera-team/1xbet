@@ -64,7 +64,7 @@ export function getSumFromStake(): number {
 }
 
 export function getCoefFromCoupon(): number {
-  const coef = document.querySelector('.coupon__end-coef');
+  const coef = document.querySelector('.c-bet-box__bet');
   if (!coef) {
     log('Ошибка парсинга коэффициента, коэффициент не найден.');
     return 0;
@@ -93,6 +93,11 @@ export function getParametrFromCoupon(): string {
     return param.textContent.split(' ')[1];
   }
 
+  if (param.textContent.toUpperCase().includes('ФОРА.')) {
+    log('Нашли параметр Фора');
+    return param.textContent.split(' ')[4];
+  }
+
   if (param.textContent.toUpperCase().includes('ФОРА')) {
     log('Нашли параметр Фора');
     const searchStr = param.textContent.match(/\((.*)\)/);
@@ -103,7 +108,7 @@ export function getParametrFromCoupon(): string {
     log('Нашли параметр ИТ');
     return param.textContent.split(' ')[1];
   }
-
+  log('Без параметра, или он не документирован.');
   return '-6666';
 }
 
