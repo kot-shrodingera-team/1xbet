@@ -113,7 +113,16 @@ export function getParametrFromCoupon(): string {
 }
 
 export function checkIsEnabled(): boolean {
-  return Boolean(!document.querySelector('.error__message-container'));
+  if (document.querySelector('.c-bet-box--blocked')) {
+    log('Ставка недоступна (box--blocked)');
+    return false;
+  }
+  if (document.querySelector('.error__message-container')) {
+    log('Ставка недоступна (error__message)');
+    return false;
+  }
+  log('Ставка доступна');
+  return true;
 }
 
 export async function awaiter(
