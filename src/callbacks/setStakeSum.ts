@@ -1,13 +1,18 @@
-import { log } from '../logger';
 import { fireEvent } from '@kot-shrodingera-team/config/util';
 
-export function setStakeSum(sum: number): boolean {
-  const sumInput = document.querySelector('.bet_sum_input') as HTMLInputElement;
-  if (!sumInput) {
-    log('Поле для ввода суммы не найдено');
+const setStakeSum = (sum: number): boolean => {
+  worker.Helper.WriteLine(`Вводим сумму ставки: ${sum}`);
+  const inputElement = document.querySelector(
+    'input.bet_sum_input'
+  ) as HTMLInputElement;
+  if (!inputElement) {
+    worker.Helper.WriteLine('Поле ввода ставки не найдено');
     return false;
   }
-  sumInput.value = sum.toString();
-  fireEvent(sumInput, 'input');
+  inputElement.value = String(sum);
+  fireEvent(inputElement, 'input');
+  worker.StakeInfo.Summ = sum;
   return true;
-}
+};
+
+export default setStakeSum;

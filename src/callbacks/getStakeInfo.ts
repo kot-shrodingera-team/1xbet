@@ -1,31 +1,24 @@
-import { checkAuth } from '../initialization/auth';
-import {
-  getMaxStake,
-  getMinStake,
-  getStakeCount,
-  getSumFromStake,
-  checkIsEnabled,
-  getCoefFromCoupon,
-  getParametrFromCoupon,
-} from '../stake-functions';
-import { getBalance } from '../initialization/balance';
-import { log } from '../logger';
+import checkAuth from '../stake_info/checkAuth';
+import getStakeCount from '../stake_info/getStakeCount';
+import getBalance from '../stake_info/getBalance';
+import checkStakeEnabled from '../stake_info/checkStakeEnabled';
+import getCoefficient from '../stake_info/getCoefficient';
+import getParameter from '../stake_info/getParameter';
+import getMinimumStake from '../stake_info/getMinimumStake';
+import getMaximumStake from '../stake_info/getMaximumStake';
+import getCurrentSum from '../stake_info/getCurrentSum';
 
-export function getStakeInfo(): string {
+const getStakeInfo = (): void => {
+  worker.Helper.WriteLine('Получение информации о ставке');
   worker.StakeInfo.Auth = checkAuth();
   worker.StakeInfo.StakeCount = getStakeCount();
   worker.StakeInfo.Balance = getBalance();
-  worker.StakeInfo.MinSumm = getMinStake();
-  worker.StakeInfo.MaxSumm = getMaxStake();
-  worker.StakeInfo.Summ = getSumFromStake();
-  worker.StakeInfo.IsEnebled = checkIsEnabled();
-  if (worker.StakeInfo.StakeCount === 1) {
-    worker.StakeInfo.Coef = getCoefFromCoupon();
-    worker.StakeInfo.Parametr = Number(getParametrFromCoupon());
-  } else {
-    log('Ошибка в кол-ве открытых купонов!');
-    return;
-  }
+  worker.StakeInfo.MinSumm = getMinimumStake();
+  worker.StakeInfo.MaxSumm = getMaximumStake();
+  worker.StakeInfo.Summ = getCurrentSum();
+  worker.StakeInfo.IsEnebled = checkStakeEnabled();
+  worker.StakeInfo.Coef = getCoefficient();
+  worker.StakeInfo.Parametr = getParameter();
+};
 
-  return JSON.stringify(worker.StakeInfo);
-}
+export default getStakeInfo;

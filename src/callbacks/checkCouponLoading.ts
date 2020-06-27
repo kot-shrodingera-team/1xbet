@@ -1,32 +1,42 @@
-import { log } from '../logger';
-import { getStakeCount } from '../stake-functions';
-import { showStake } from '../initialization';
-let loadingCount = 0;
-export function checkCouponLoading(): boolean {
-  if (getStakeCount() === 0) {
-    log('Купон не открыт! ');
-    showStake();
-    return false;
+let loadingCounter = 0;
+let stakeProcessingHungMessageSend = false;
+
+export const clearLoadingCounter = (): void => {
+  loadingCounter = 0;
+};
+export const clearStakeProcessingHungMessageSend = (): void => {
+  stakeProcessingHungMessageSend = false;
+};
+
+const checkCouponLoading = (): boolean => {
+  if (!stakeProcessingHungMessageSend && loadingCounter > 200) {
+    const message =
+      `В 1xbet очень долгое принятие ставки. Возможно зависание\n` +
+      `Событие: ${worker.TeamOne} - ${worker.TeamTwo}\n` +
+      `Ставка: ${worker.BetName}\n` +
+      `Сумма: ${worker.StakeInfo.Summ}\n`;
+    worker.Helper.SendInformedMessage(message);
+    worker.Helper.WriteLine('Очень долгое принятие ставки. Возможно зависание');
+    stakeProcessingHungMessageSend = true;
   }
-  if (loadingCount > 200) {
-    log('Долгое ожидание загрузки купона');
-    return false;
-  }
+  loadingCounter += 1;
   const succesModal = document.querySelector('.c-coupon-modal');
   const popUp = document.querySelector('.swal2-popup');
   const blockedCoupon = document.querySelector('.c-bet-box__overlay');
   if (succesModal) {
-    log('Загрузка окончена ставка успешная');
+    worker.Helper.WriteLine('Обработка ставки завершена (успешная)');
     return false;
-  } else if (popUp) {
-    log('Загрузка окончена');
-    return false;
-  } else if (blockedCoupon) {
-    log('Загрузка окончена купон заблокирован');
-    return false;
-  } else {
-    loadingCount++;
-    log('Идет загрузка купона');
-    return true;
   }
-}
+  if (popUp) {
+    worker.Helper.WriteLine('Обработка ставки завершена (всплывающее окно)');
+    return false;
+  }
+  if (blockedCoupon) {
+    worker.Helper.WriteLine('Обработка ставки завершена (купон заблокирован)');
+    return false;
+  }
+  worker.Helper.WriteLine('Обработка ставки');
+  return true;
+};
+
+export default checkCouponLoading;
