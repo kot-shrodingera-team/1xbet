@@ -22,7 +22,7 @@ const checkCouponLoading = (): boolean => {
   loadingCounter += 1;
   const succesModal = document.querySelector('.c-coupon-modal');
   const popUp = document.querySelector('.swal2-popup');
-  const blockedCoupon = document.querySelector('.c-bet-box__overlay');
+  // const blockedCoupon = document.querySelector('.c-bet-box__overlay');
   if (succesModal) {
     worker.Helper.WriteLine('Обработка ставки завершена (успешная)');
     return false;
@@ -31,10 +31,10 @@ const checkCouponLoading = (): boolean => {
     worker.Helper.WriteLine('Обработка ставки завершена (всплывающее окно)');
     return false;
   }
-  if (blockedCoupon) {
-    worker.Helper.WriteLine('Обработка ставки завершена (купон заблокирован)');
-    return false;
-  }
+  // if (blockedCoupon) {
+  //   worker.Helper.WriteLine('Обработка ставки завершена (купон заблокирован)');
+  //   return false;
+  // }
   worker.Helper.WriteLine('Обработка ставки');
   return true;
 };
