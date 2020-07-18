@@ -6,6 +6,7 @@ import doStake from './callbacks/doStake';
 import checkCouponLoading from './callbacks/checkCouponLoading';
 import checkStakeStatus from './callbacks/checkStakeStatus';
 import initialize from './initialization';
+import afterSuccesfulStake from './callbacks/afterSuccesfulStake';
 
 pipeHwlToConsole();
 
@@ -23,7 +24,8 @@ worker.SetCallBacks(
   setStakeSum,
   doStake,
   checkCouponLoading,
-  checkStakeStatus
+  checkStakeStatus,
+  afterSuccesfulStake
 );
 
 const fastLoad = (): void => {
