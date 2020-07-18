@@ -15,16 +15,29 @@ const checkStakeStatus = (): boolean => {
     if (!popUpTextElement) {
       worker.Helper.WriteLine('Не найден текст всплывающего окна');
     }
+    const popUpText = popUpTextElement.textContent.trim();
     worker.Helper.WriteLine(
       `Текст всплывающего окна: ${popUpTextElement.textContent.trim()}`
     );
-    const popUpOkButton = document.querySelector(
-      '.swal2-confirm'
-    ) as HTMLElement;
-    if (!popUpOkButton) {
-      worker.Helper.WriteLine('Не найдена кнопка ОК во всплывающем окне');
+    if (popUpText.startsWith('Изменился коэффициент')) {
+      worker.Helper.WriteLine('Изменился коэффициент. Отменяем ставку');
+      const cancelButton = document.querySelector(
+        '.swal2-cancel'
+      ) as HTMLElement;
+      if (!cancelButton) {
+        worker.Helper.WriteLine(
+          'Не найдена кнопка "Отмена" во всплывающем окне'
+        );
+      } else {
+        cancelButton.click();
+      }
+      return false;
+    }
+    const okButton = document.querySelector('.swal2-confirm') as HTMLElement;
+    if (!okButton) {
+      worker.Helper.WriteLine('Не найдена кнопка "ОК" во всплывающем окне');
     } else {
-      popUpOkButton.click();
+      okButton.click();
     }
     return false;
   }
