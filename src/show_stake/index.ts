@@ -15,7 +15,7 @@ const showStake = async (): Promise<void> => {
     worker.JSFail();
     return;
   }
-  const gameElement = await getElement(`[id="${gameId}"]`);
+  const gameElement = await getElement(`[id="${gameId}"]`, 10000);
   if (!gameElement) {
     worker.Helper.WriteLine('Событие не загрузилось');
     worker.JSFail();
