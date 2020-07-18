@@ -4,6 +4,7 @@ import getStakeCount from '../stake_info/getStakeCount';
 import { updateBalance } from '../stake_info/getBalance';
 import expandAllMarkets from './expandAllMarkets';
 import findBet from './findBet';
+import setBetAcceptMode from './setBetAcceptMode';
 
 const showStake = async (): Promise<void> => {
   const betData = worker.BetId.split('|');
@@ -44,6 +45,7 @@ const showStake = async (): Promise<void> => {
     return;
   }
   worker.Helper.WriteLine('Ставка успешно открыта');
+  setBetAcceptMode();
   worker.JSStop();
 };
 
