@@ -6,15 +6,15 @@ import {
 import getPhoneCountry from './getPhoneCountry';
 
 const authorize = async (): Promise<boolean> => {
-  const openLoginFormButton = document.querySelector(
-    '#curLoginForm'
-  ) as HTMLButtonElement;
-  if (!openLoginFormButton) {
-    worker.Helper.WriteLine('Не найдена кнопка открытия формы авторизации');
-    return;
-  }
-  const loopCount = 5;
+  const loopCount = 10;
   for (let i = 1; i <= loopCount; i += 1) {
+    const openLoginFormButton = document.querySelector(
+      '#curLoginForm'
+    ) as HTMLButtonElement;
+    if (!openLoginFormButton) {
+      worker.Helper.WriteLine('Не найдена кнопка открытия формы авторизации');
+      return;
+    }
     openLoginFormButton.click();
     // eslint-disable-next-line no-await-in-loop
     const authForm = await getElement('.base_auth_form.active', 500);
