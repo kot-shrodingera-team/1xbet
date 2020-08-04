@@ -1,4 +1,4 @@
-import { getElement, awaiter } from '@kot-shrodingera-team/config/util';
+import { getElement, awaiter, sleep } from '@kot-shrodingera-team/config/util';
 import clearCoupon from './clearCoupon';
 import getStakeCount from '../stake_info/getStakeCount';
 import { updateBalance } from '../stake_info/getBalance';
@@ -7,10 +7,7 @@ import findBet from './findBet';
 import setBetAcceptMode from './setBetAcceptMode';
 
 const showStake = async (): Promise<void> => {
-  const betData = worker.BetId.split('|');
-  const gameId = betData[0];
-  const betParameter = betData[1];
-  const marketId = betData[3];
+  const [gameId, betParameter, , marketId] = worker.BetId.split('|');
   if (document.querySelector('.error_page')) {
     worker.Helper.WriteLine('Событие не найдено');
     worker.JSFail();
@@ -45,7 +42,12 @@ const showStake = async (): Promise<void> => {
     return;
   }
   worker.Helper.WriteLine('Ставка успешно открыта');
-  setBetAcceptMode();
+  await sleep(0);
+  if (!setBetAcceptMode()) {
+    worker.Helper.WriteLine('Не удалось поменять режим принятия ставки');
+    worker.JSFail();
+    return;
+  }
   worker.JSStop();
 };
 
