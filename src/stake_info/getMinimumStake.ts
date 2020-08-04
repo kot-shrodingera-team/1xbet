@@ -1,5 +1,8 @@
 const getMinimumStake = (): number => {
-  return 10;
+  if (worker.Currency === 'RUR' || worker.Currency === 'KZT') {
+    return 10;
+  }
+  return 0;
 };
 
 export default getMinimumStake;
