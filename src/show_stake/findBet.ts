@@ -5,7 +5,9 @@ const findBet = (
 ): HTMLElement => {
   const marketBets = [
     ...document.querySelectorAll(
-      `#allBetsTable[data-gameid="${gameId}"] > .bet_group_col span[data-type="${marketId}"]`
+      `#allBetsTable[data-gameid="${gameId}"] > .bet_group_col span[data-type="${Number(
+        marketId
+      )}"]`
     ),
   ] as HTMLElement[];
   if (marketBets.length === 0) {
