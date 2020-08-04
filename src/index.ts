@@ -1,3 +1,4 @@
+import './workerCheck';
 import { pipeHwlToConsole } from '@kot-shrodingera-team/config/util';
 import showStake from './show_stake';
 import getStakeInfo from './callbacks/getStakeInfo';
