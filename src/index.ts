@@ -1,26 +1,26 @@
-import './workerCheck';
-import { pipeHwlToConsole } from '@kot-shrodingera-team/config/util';
+import '@kot-shrodingera-team/worker-declaration/workerCheck';
+import { log } from '@kot-shrodingera-team/germes-utils';
 import showStake from './show_stake';
-import getStakeInfo from './callbacks/getStakeInfo';
-import setStakeSum from './callbacks/setStakeSum';
-import doStake from './callbacks/doStake';
-import checkCouponLoading from './callbacks/checkCouponLoading';
-import checkStakeStatus from './callbacks/checkStakeStatus';
+import getStakeInfo from './worker_callbacks/getStakeInfo';
+import setStakeSum from './worker_callbacks/setStakeSum';
+import doStake from './worker_callbacks/doStake';
+import checkCouponLoading from './worker_callbacks/checkCouponLoading';
+import checkStakeStatus from './worker_callbacks/checkStakeStatus';
 import initialize from './initialization';
-import afterSuccesfulStake from './callbacks/afterSuccesfulStake';
-
-pipeHwlToConsole();
+import afterSuccesfulStake from './worker_callbacks/afterSuccesfulStake';
+import fastLoad from './fastLoad';
 
 (async (): Promise<void> => {
-  worker.Helper.WriteLine('Начали');
+  log(`Загрузка страницы`, 'steelblue');
   if (!worker.IsShowStake) {
     initialize();
   } else {
     showStake();
   }
 })();
+
 worker.SetCallBacks(
-  console.log,
+  log,
   getStakeInfo,
   setStakeSum,
   doStake,
@@ -28,9 +28,5 @@ worker.SetCallBacks(
   checkStakeStatus,
   afterSuccesfulStake
 );
-
-const fastLoad = (): void => {
-  worker.Helper.LoadUrl(worker.EventUrl.replace(/_/g, '-'));
-};
 
 worker.SetFastCallback(fastLoad);

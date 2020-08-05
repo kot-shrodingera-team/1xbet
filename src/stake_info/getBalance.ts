@@ -1,42 +1,15 @@
-import { awaiter } from '@kot-shrodingera-team/config/util';
+import {
+  balanceReadyGenerator,
+  getBalanceGenerator,
+} from '@kot-shrodingera-team/germes-generators/stake_info';
 
-export const balanceReady = async (
-  timeout = 5000,
-  interval = 100
-): Promise<boolean> => {
-  const balanceLoaded = Boolean(
-    await awaiter(
-      () => {
-        const balanceElement = document.querySelector('.top-b-acc__amount');
-        if (!balanceElement) {
-          return false;
-        }
-        const balance = Number(balanceElement.textContent.trim());
-        return !Number.isNaN(balance);
-      },
-      timeout,
-      interval
-    )
-  );
-  return balanceLoaded;
-};
+export const balanceReady = balanceReadyGenerator({
+  balanceSelector: '.top-b-acc__amount',
+});
 
-const getBalance = (): number => {
-  const balanceElement = document.querySelector(
-    '.top-b-acc__amount'
-  ) as HTMLElement;
-  if (!balanceElement) {
-    worker.Helper.WriteLine('Баланс не найден');
-    return 0;
-  }
-  const balanceText = balanceElement.textContent.trim();
-  const balance = Number(balanceText);
-  if (Number.isNaN(balance)) {
-    worker.Helper.WriteLine(`Непонятный формат баланса: ${balanceText}`);
-    return 0;
-  }
-  return balance;
-};
+const getBalance = getBalanceGenerator({
+  balanceSelector: '.top-b-acc__amount',
+});
 
 export const updateBalance = (): void => {
   worker.JSBalanceChange(getBalance());

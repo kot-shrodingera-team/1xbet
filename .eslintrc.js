@@ -1,3 +1,3 @@
 module.exports = {
-  extends: './node_modules/@kot-shrodingera-team/config/.eslintrc',
+  extends: '@kot-shrodingera-team/eslint-config-germes/.eslintrc',
 };

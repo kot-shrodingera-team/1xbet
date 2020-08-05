@@ -1,33 +1,15 @@
-import getBalance, {
-  balanceReady,
-  updateBalance,
-} from '../stake_info/getBalance';
-import checkAuth from '../stake_info/checkAuth';
+import { initializeGenerator } from '@kot-shrodingera-team/germes-generators/initialization';
 import authCheckReady from './authCheckReady';
+import checkAuth from '../stake_info/checkAuth';
+import { balanceReady, updateBalance } from '../stake_info/getBalance';
 import authorize from './authorize';
 
-const initialize = async (): Promise<void> => {
-  if (worker.LoginTry > 3) {
-    worker.Helper.WriteLine('Превышен лимит попыток авторизации');
-    return;
-  }
-
-  await authCheckReady();
-  worker.Islogin = checkAuth();
-  worker.JSLogined();
-  if (worker.Islogin) {
-    worker.Helper.WriteLine('Есть авторизация');
-    worker.Islogin = true;
-    worker.JSLogined();
-    const balanceLoaded = await balanceReady();
-    if (!balanceLoaded) {
-      worker.Helper.WriteLine(`Баланс не появился (${getBalance()})`);
-    } else {
-      updateBalance();
-    }
-    return;
-  }
-  authorize();
-};
+const initialize = initializeGenerator(
+  authCheckReady,
+  checkAuth,
+  balanceReady,
+  updateBalance,
+  authorize
+);
 
 export default initialize;

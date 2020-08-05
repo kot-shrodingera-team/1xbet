@@ -1,4 +1,9 @@
-import { getElement, awaiter, sleep } from '@kot-shrodingera-team/config/util';
+import {
+  getElement,
+  awaiter,
+  sleep,
+  log,
+} from '@kot-shrodingera-team/germes-utils';
 import clearCoupon from './clearCoupon';
 import getStakeCount from '../stake_info/getStakeCount';
 import { updateBalance } from '../stake_info/getBalance';
@@ -8,27 +13,30 @@ import setBetAcceptMode from './setBetAcceptMode';
 
 const showStake = async (): Promise<void> => {
   const [gameId, betParameter, , marketId] = worker.BetId.split('|');
+  await Promise.race([
+    getElement('.error_page', 1000),
+    getElement(`[id="${gameId}"]`, 10000),
+  ]);
   if (document.querySelector('.error_page')) {
-    worker.Helper.WriteLine('Событие не найдено');
+    log('Событие не найдено', 'red');
     worker.JSFail();
     return;
   }
-  const gameElement = await getElement(`[id="${gameId}"]`, 10000);
+  const gameElement = document.querySelector(`[id="${gameId}"]`);
   if (!gameElement) {
-    worker.Helper.WriteLine('Событие не загрузилось');
+    log('Событие не найдено на странице', 'red');
     worker.JSFail();
     return;
   }
-  worker.Helper.WriteLine('Событие загрузилось');
+  log('Событие загрузилось', 'steelblue');
   const couponCleared = await clearCoupon();
   if (!couponCleared) {
     worker.JSFail();
     return;
   }
   updateBalance();
-  worker.Helper.WriteLine('Раскрываем все маркеты');
-  await expandAllMarkets(gameElement);
-  worker.Helper.WriteLine('Раскрыли все маркеты');
+  await expandAllMarkets();
+  await sleep(0); // Иначе после нажатия на кнопку разворачивания маркетов, они не будут найдены
   const betButton = findBet(gameId, marketId, betParameter);
   if (!betButton) {
     worker.JSFail();
@@ -37,17 +45,13 @@ const showStake = async (): Promise<void> => {
   betButton.click();
   const betAdded = await awaiter(() => getStakeCount() === 1);
   if (!betAdded) {
-    worker.Helper.WriteLine('Ставка не попала в купон');
+    log('Ставка не попала в купон', 'red');
     worker.JSFail();
     return;
   }
-  worker.Helper.WriteLine('Ставка успешно открыта');
+  log('Ставка успешно открыта', 'green');
   await sleep(0);
-  if (!setBetAcceptMode()) {
-    worker.Helper.WriteLine('Не удалось поменять режим принятия ставки');
-    worker.JSFail();
-    return;
-  }
+  setBetAcceptMode();
   worker.JSStop();
 };
 

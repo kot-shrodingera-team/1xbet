@@ -1,3 +1,5 @@
+import { log } from '@kot-shrodingera-team/germes-utils';
+
 const findBet = (
   gameId: string,
   marketId: string,
@@ -11,16 +13,15 @@ const findBet = (
     ),
   ] as HTMLElement[];
   if (marketBets.length === 0) {
-    worker.Helper.WriteLine('Не найдены ставки по нужному маркету');
+    log('Не найдены ставки по нужному маркету', 'red');
     return null;
   }
-  worker.Helper.WriteLine(
-    `По нужному маркету найдено ставок: ${marketBets.length}`
-  );
+  log(`По нужному маркету найдено ставок: ${marketBets.length}`, 'steelblue');
   if (betParameter === 'null') {
     if (marketBets.length > 1) {
-      worker.Helper.WriteLine(
-        'Найдено больше одной ставки по данному маркету (без параметра)'
+      log(
+        'Найдено больше одной ставки по данному маркету (без параметра)',
+        'red'
       );
       return null;
     }
@@ -30,16 +31,14 @@ const findBet = (
     return bet.textContent.trim().includes(betParameter);
   });
   if (filteredBets.length === 0) {
-    worker.Helper.WriteLine(
-      'Не найдены ставки по нужному маркету с нужным параметром'
-    );
+    log('Не найдены ставки по нужному маркету с нужным параметром', 'red');
     return null;
   }
   if (filteredBets.length > 1) {
-    worker.Helper.WriteLine('Найдено больше одной ставки с данным параметром');
+    log('Найдено больше одной ставки с данным параметром', 'red');
     return null;
   }
-  worker.Helper.WriteLine('Нужная ставка найдена');
+  log('Нужная ставка найдена', 'steelblue');
   return filteredBets[0];
 };
 

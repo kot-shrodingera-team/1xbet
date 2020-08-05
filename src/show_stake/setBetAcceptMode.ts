@@ -1,3 +1,5 @@
+import { log } from '@kot-shrodingera-team/germes-utils';
+
 const setBetAcceptMode = (): boolean => {
   const betAcceptModes = [
     ...document.querySelectorAll(
@@ -23,7 +25,7 @@ const setBetAcceptMode = (): boolean => {
     }
   })();
   if (!mode) {
-    worker.Helper.WriteLine('Не найдена нужная опция режима принятия ставки');
+    log('Не найдена нужная опция режима принятия ставки', 'crimson');
     return false;
   }
   mode.click();

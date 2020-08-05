@@ -1,15 +1,16 @@
-const checkStakeEnabled = (): boolean => {
-  const boxBlocked = document.querySelector('.c-bet-box--blocked');
-  if (boxBlocked) {
-    worker.Helper.WriteLine('Ставка недоступна (box--blocked)');
-    return false;
-  }
-  const errorMessage = document.querySelector('.error__message-container');
-  if (errorMessage) {
-    worker.Helper.WriteLine('Ставка недоступна (error__message)');
-    return false;
-  }
-  return true;
-};
+import { checkStakeEnabledGenerator } from '@kot-shrodingera-team/germes-generators/stake_info';
+
+const checkStakeEnabled = checkStakeEnabledGenerator({
+  errorsCheck: [
+    {
+      selector: '.c-bet-box--blocked',
+      message: 'box--blocked',
+    },
+    {
+      selector: '.error__message-container',
+      message: 'error__message',
+    },
+  ],
+});
 
 export default checkStakeEnabled;

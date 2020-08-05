@@ -1,18 +1,17 @@
+import { log, ri } from '@kot-shrodingera-team/germes-utils';
+
 const getParameter = (): number => {
   const marketElement = document.querySelector('.c-bet-box__market');
   if (!marketElement) {
-    worker.Helper.WriteLine('Не найдена роспись ставки');
+    log(
+      'Ошибка определения параметра ставки: Не найдена роспись ставки',
+      'crimson'
+    );
     return -9999;
   }
   const market = marketElement.textContent.trim();
-  const totalRegex = new RegExp(
-    String.raw`^.*тотал.* (\d+(?:\.\d+)) [МБ]$`,
-    'i'
-  );
-  const handicapRegex = new RegExp(
-    String.raw`^.*фора.* (-?\d+(?:\.\d+))$`,
-    'i'
-  );
+  const totalRegex = ri`^.*тотал.* (\d+(?:\.\d+)) [МБ]$`;
+  const handicapRegex = ri`^.*фора.* (-?\d+(?:\.\d+))$`;
 
   const totalMatch = market.match(totalRegex);
   if (totalMatch) {

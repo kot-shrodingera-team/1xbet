@@ -1,7 +1,9 @@
 {
-  "extends": "@kot-shrodingera-team/config",
+  "extends": "@kot-shrodingera-team/typescript-config-germes/tsconfig",
   "include": [
-    "./src/**/*.ts",
-    "./node_modules/@kot-shrodingera-team/config/**/*.ts"
+    "./node_modules/@kot-shrodingera-team/worker-declaration/*.ts",
+    "./node_modules/@kot-shrodingera-team/germes-utils/*.ts",
+    "./node_modules/@kot-shrodingera-team/germes-generators/**/*.ts",
+    "./src/**/*.ts"
   ]
 }

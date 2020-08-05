@@ -1,10 +1,8 @@
-import { getElement } from '@kot-shrodingera-team/config/util';
+import { authCheckReadyGenerator } from '@kot-shrodingera-team/germes-generators/initialization';
 
-const authCheckReady = async (timeout = 5000): Promise<void> => {
-  await Promise.race([
-    getElement('#curLoginForm', timeout),
-    getElement('.submenu_link[href="office/account/"]', timeout),
-  ]);
-};
+const authCheckReady = authCheckReadyGenerator({
+  authFormSelector: '#curLoginForm',
+  accountSelector: '.submenu_link[href="office/account/"]',
+});
 
 export default authCheckReady;
