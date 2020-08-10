@@ -1,4 +1,4 @@
-import { clearCouponGenerator } from '@kot-shrodingera-team/germes-generators/show_stake';
+import clearCouponGenerator from '@kot-shrodingera-team/germes-generators/show_stake/clearCoupon';
 import getStakeCount from '../stake_info/getStakeCount';
 
 const clearCoupon = clearCouponGenerator({

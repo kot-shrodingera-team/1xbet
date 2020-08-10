@@ -11,27 +11,38 @@ import expandAllMarkets from './expandAllMarkets';
 import findBet from './findBet';
 import setBetAcceptMode from './setBetAcceptMode';
 
+let couponOpenning = false;
+
+export const isCouponOpenning = (): boolean => couponOpenning;
+
+const jsFail = (message = ''): void => {
+  if (message) {
+    log(message, 'red');
+  }
+  couponOpenning = false;
+  worker.JSFail();
+};
+
 const showStake = async (): Promise<void> => {
+  couponOpenning = true;
   const [gameId, betParameter, , marketId] = worker.BetId.split('|');
   await Promise.race([
-    getElement('.error_page', 1000),
+    getElement('.error_page', 10000),
     getElement(`[id="${gameId}"]`, 10000),
   ]);
   if (document.querySelector('.error_page')) {
-    log('Событие не найдено', 'red');
-    worker.JSFail();
+    jsFail('Событие не найдено');
     return;
   }
   const gameElement = document.querySelector(`[id="${gameId}"]`);
   if (!gameElement) {
-    log('Событие не найдено на странице', 'red');
-    worker.JSFail();
+    jsFail('Событие не найдено на странице');
     return;
   }
   log('Событие загрузилось', 'steelblue');
   const couponCleared = await clearCoupon();
   if (!couponCleared) {
-    worker.JSFail();
+    jsFail();
     return;
   }
   updateBalance();
@@ -39,19 +50,19 @@ const showStake = async (): Promise<void> => {
   await sleep(0); // Иначе после нажатия на кнопку разворачивания маркетов, они не будут найдены
   const betButton = findBet(gameId, marketId, betParameter);
   if (!betButton) {
-    worker.JSFail();
+    jsFail();
     return;
   }
   betButton.click();
   const betAdded = await awaiter(() => getStakeCount() === 1);
   if (!betAdded) {
-    log('Ставка не попала в купон', 'red');
-    worker.JSFail();
+    jsFail('Ставка не попала в купон');
     return;
   }
   log('Ставка успешно открыта', 'green');
   await sleep(0);
   setBetAcceptMode();
+  couponOpenning = false;
   worker.JSStop();
 };
 

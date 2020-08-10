@@ -1,6 +1,8 @@
-import { checkStakeEnabledGenerator } from '@kot-shrodingera-team/germes-generators/stake_info';
+import checkStakeEnabledGenerator from '@kot-shrodingera-team/germes-generators/stake_info/checkStakeEnabled';
+import getStakeCount from './getStakeCount';
 
 const checkStakeEnabled = checkStakeEnabledGenerator({
+  getStakeCount,
   errorsCheck: [
     {
       selector: '.c-bet-box--blocked',

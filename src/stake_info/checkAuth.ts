@@ -1,4 +1,4 @@
-import { checkAuthGenerator } from '@kot-shrodingera-team/germes-generators/stake_info';
+import checkAuthGenerator from '@kot-shrodingera-team/germes-generators/stake_info/checkAuth';
 
 const checkAuth = checkAuthGenerator({
   accountSelector: '.submenu_link[href="office/account/"]',

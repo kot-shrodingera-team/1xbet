@@ -1,7 +1,7 @@
 import {
   balanceReadyGenerator,
   getBalanceGenerator,
-} from '@kot-shrodingera-team/germes-generators/stake_info';
+} from '@kot-shrodingera-team/germes-generators/stake_info/getBalance';
 
 export const balanceReady = balanceReadyGenerator({
   balanceSelector: '.top-b-acc__amount',
