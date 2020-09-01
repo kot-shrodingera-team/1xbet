@@ -1,7 +1,14 @@
-import checkAuthGenerator from '@kot-shrodingera-team/germes-generators/stake_info/checkAuth';
+import checkAuthGenerator, {
+  authStateReadyGenerator,
+} from '@kot-shrodingera-team/germes-generators/stake_info/checkAuth';
+
+export const authStateReady = authStateReadyGenerator({
+  noAuthElementSelector: '#curLoginForm',
+  authElementSelector: '.submenu_link[href="office/account/"]',
+});
 
 const checkAuth = checkAuthGenerator({
-  accountSelector: '.submenu_link[href="office/account/"]',
+  authElementSelector: '.submenu_link[href="office/account/"]',
 });
 
 export default checkAuth;

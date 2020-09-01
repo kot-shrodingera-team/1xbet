@@ -3,6 +3,7 @@ import {
   awaiter,
   sleep,
   log,
+  checkUrl,
 } from '@kot-shrodingera-team/germes-utils';
 import clearCoupon from './clearCoupon';
 import getStakeCount from '../stake_info/getStakeCount';
@@ -10,6 +11,7 @@ import { updateBalance } from '../stake_info/getBalance';
 import expandAllMarkets from './expandAllMarkets';
 import findBet from './findBet';
 import setBetAcceptMode from './setBetAcceptMode';
+import { maximumStakeReady } from '../stake_info/getMaximumStake';
 
 let couponOpenning = false;
 
@@ -57,6 +59,11 @@ const showStake = async (): Promise<void> => {
   const betAdded = await awaiter(() => getStakeCount() === 1);
   if (!betAdded) {
     jsFail('Ставка не попала в купон');
+    return;
+  }
+  const maximumStakeLoaded = await maximumStakeReady();
+  if (!maximumStakeLoaded) {
+    jsFail('Максимальная ставка не появилась');
     return;
   }
   log('Ставка успешно открыта', 'green');
