@@ -27,7 +27,7 @@ const findBet = (
     }
     return marketBets[0];
   }
-  const parameterRegex = ri`(?:^|\s)${betParameter}(?:$|\s)`;
+  const parameterRegex = ri`(?:^|\s)${betParameter}(?:$|\s[МБ])`;
   const filteredBets = marketBets.filter((bet) => {
     const betText = bet.textContent.trim();
     return parameterRegex.test(betText);
