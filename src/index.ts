@@ -1,4 +1,4 @@
-import '@kot-shrodingera-team/worker-declaration/workerDataCheck';
+import '@kot-shrodingera-team/worker-declaration/workerCheck';
 import { log } from '@kot-shrodingera-team/germes-utils';
 import showStake from './show_stake';
 import getStakeInfo from './worker_callbacks/getStakeInfo';
