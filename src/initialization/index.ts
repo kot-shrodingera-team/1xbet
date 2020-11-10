@@ -4,7 +4,7 @@ import { balanceReady, updateBalance } from '../stake_info/getBalance';
 import authorize from './authorize';
 
 const initialize = initializeGenerator({
-  authCheckReady: authStateReady,
+  authStateReady,
   checkAuth,
   balanceReady,
   updateBalance,

@@ -1,7 +1,7 @@
 import authorizeGenerator from '@kot-shrodingera-team/germes-generators/initialization/authorize';
 import { log } from '@kot-shrodingera-team/germes-utils';
 
-const changeToPhoneLogin = async (): Promise<boolean> => {
+const setLoginType = async (): Promise<boolean> => {
   const phoneButton = document.querySelector(
     '.custom-functional-button'
   ) as HTMLElement;
@@ -19,11 +19,8 @@ const authorize = worker.IsRu
         selector: '#curLoginForm',
         openedSelector: '.base_auth_form.active',
       },
-      phoneLogin: {
-        changeToPhoneLogin,
-        phoneInputSelector: '#auth_phone_number',
-      },
-      loginInputSelector: '#auth_id_email',
+      setLoginType,
+      loginInputSelector: '#auth_id_email, #auth_phone_number',
       passwordInputSelector: '#auth-form-password',
       submitButtonSelector: '.auth-button',
       beforeSubmitDelay: 1000,
