@@ -3,7 +3,7 @@ import checkAuthGenerator, {
 } from '@kot-shrodingera-team/germes-generators/stake_info/checkAuth';
 
 export const authStateReady = authStateReadyGenerator({
-  noAuthElementSelector: '#curLoginForm',
+  noAuthElementSelector: '.curloginDropTop',
   authElementSelector: '.submenu_link[href="office/account/"]',
 });
 
