@@ -10,8 +10,8 @@ const getParameter = (): number => {
     return -9999;
   }
   const market = marketElement.textContent.trim();
-  const totalRegex = ri`^.*тотал.* (\d+(?:\.\d+)) [МБ]$`;
-  const handicapRegex = ri`^.*фора.* (-?\d+(?:\.\d+))$`;
+  const totalRegex = ri`^.*тотал.* (\d+(?:\.\d+)?) [МБ]$`;
+  const handicapRegex = ri`^.*фора.* (-?\d+(?:\.\d+)?)$`;
 
   const totalMatch = market.match(totalRegex);
   if (totalMatch) {
