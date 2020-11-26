@@ -1,76 +1,71 @@
-import {
-  getElement,
-  awaiter,
-  sleep,
-  log,
-  checkUrl,
-} from '@kot-shrodingera-team/germes-utils';
+import { log, checkUrl, sleep } from '@kot-shrodingera-team/germes-utils';
 import clearCoupon from './clearCoupon';
-import getStakeCount from '../stake_info/getStakeCount';
 import { updateBalance } from '../stake_info/getBalance';
-import expandAllMarkets from './expandAllMarkets';
-import findBet from './findBet';
 import setBetAcceptMode from './setBetAcceptMode';
+import checkAuth, { authStateReady } from '../stake_info/checkAuth';
+import JsFailError from './errors/jsFailError';
+import NewUrlError from './errors/newUrlError';
+import openBet from './openBet';
+import openEvent from './openEvent';
+import preCheck from './preCheck';
 import { maximumStakeReady } from '../stake_info/getMaximumStake';
 
 let couponOpenning = false;
 
 export const isCouponOpenning = (): boolean => couponOpenning;
 
-const jsFail = (message = ''): void => {
-  if (message) {
-    log(message, 'red');
-  }
-  couponOpenning = false;
-  worker.JSFail();
-};
-
 const showStake = async (): Promise<void> => {
+  localStorage.setItem('couponOpening', '1');
   couponOpenning = true;
-  const [gameId, betParameter, , marketId] = worker.BetId.split('|');
-  await Promise.race([
-    getElement('.error_page', 10000),
-    getElement(`[id="${gameId}"]`, 10000),
-  ]);
-  if (document.querySelector('.error_page')) {
-    jsFail('Событие не найдено');
-    return;
+  try {
+    if (!checkUrl()) {
+      log('Открыта не страница конторы (или зеркала)', 'crimson');
+      window.location.href = new URL(worker.BookmakerMainUrl).href;
+      throw new NewUrlError('Открывает страницу БК');
+    }
+
+    await authStateReady();
+    worker.Islogin = checkAuth();
+    worker.JSLogined();
+    if (!worker.Islogin) {
+      throw new JsFailError('Нет авторизации');
+    }
+    log('Есть авторизация', 'steelblue');
+
+    const couponCleared = await clearCoupon();
+    if (!couponCleared) {
+      throw new JsFailError('Не удалось очистить купон');
+    }
+    updateBalance();
+
+    await preCheck();
+
+    await openEvent();
+
+    await openBet();
+
+    const maximumStakeLoaded = await maximumStakeReady();
+    if (!maximumStakeLoaded) {
+      throw new JsFailError('Максимальная ставка не появилась');
+    }
+
+    log('Ставка успешно открыта', 'green');
+    await sleep(0);
+    setBetAcceptMode();
+    couponOpenning = false;
+    localStorage.setItem('couponOpening', '0');
+    worker.JSStop();
+  } catch (error) {
+    if (error instanceof JsFailError) {
+      log(error.message, 'red');
+      couponOpenning = false;
+      localStorage.setItem('couponOpening', '0');
+      worker.JSFail();
+    }
+    if (error instanceof NewUrlError) {
+      log(error.message, 'orange');
+    }
   }
-  const gameElement = document.querySelector(`[id="${gameId}"]`);
-  if (!gameElement) {
-    jsFail('Событие не найдено на странице');
-    return;
-  }
-  log('Событие загрузилось', 'steelblue');
-  const couponCleared = await clearCoupon();
-  if (!couponCleared) {
-    jsFail();
-    return;
-  }
-  updateBalance();
-  await expandAllMarkets();
-  await sleep(0); // Иначе после нажатия на кнопку разворачивания маркетов, они не будут найдены
-  const betButton = findBet(gameId, marketId, betParameter);
-  if (!betButton) {
-    jsFail();
-    return;
-  }
-  betButton.click();
-  const betAdded = await awaiter(() => getStakeCount() === 1);
-  if (!betAdded) {
-    jsFail('Ставка не попала в купон');
-    return;
-  }
-  const maximumStakeLoaded = await maximumStakeReady();
-  if (!maximumStakeLoaded) {
-    jsFail('Максимальная ставка не появилась');
-    return;
-  }
-  log('Ставка успешно открыта', 'green');
-  await sleep(0);
-  setBetAcceptMode();
-  couponOpenning = false;
-  worker.JSStop();
 };
 
 export default showStake;
