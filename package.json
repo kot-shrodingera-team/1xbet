@@ -1,6 +1,6 @@
 {
   "name": "@kot-shrodingera-team/1xbet",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "devDependencies": {
     "@kot-shrodingera-team/eslint-config-germes": "^1.0.4",
     "@kot-shrodingera-team/prettier-config-germes": "^1.0.1",
