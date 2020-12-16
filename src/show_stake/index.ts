@@ -30,6 +30,15 @@ const showStake = async (): Promise<void> => {
     if (!couponCleared) {
       throw new JsFailError('Не удалось очистить купон');
     }
+    const refreshBalanceButton = document.querySelector(
+      '.show_bonusProgress'
+    ) as HTMLElement;
+    if (refreshBalanceButton) {
+      log('Обновляем баланс', 'orange');
+      refreshBalanceButton.click();
+    } else {
+      log('Не найдена кнопка обновления баланса', 'crimson');
+    }
     updateBalance();
 
     await preCheck();
