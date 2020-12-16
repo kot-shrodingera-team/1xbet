@@ -34,7 +34,7 @@ const openBet = async (): Promise<void> => {
       CE: 1,
       CV: null as unknown,
       G,
-      P,
+      P: P || 0,
       PV: null as unknown,
       Pl: null as unknown,
       T,
@@ -48,7 +48,7 @@ const openBet = async (): Promise<void> => {
       Opp2Id,
       Opp1Image,
       Opp2Image,
-      GameId: gameId,
+      GameId: String(gameId),
       sportNameText: `${gameNum}. ${sport_name} ${gameChamp}`,
       opp: `${worker.TeamOne} - ${worker.TeamTwo}`,
       nameGroup,
@@ -63,9 +63,15 @@ const openBet = async (): Promise<void> => {
     is_skip_one_click: false,
   };
 
+  if (!store_global || !store_global.dispatch) {
+    throw new JsFailError('Не найден диспетчер');
+  }
+  log('Есть диспетчер', 'white', true);
+  const { dispatch } = store_global;
+
   const maxTryCount = 5;
   for (let i = 1; i <= maxTryCount; i += 1) {
-    store_global.dispatch('coupon/ACTION_ADD_BET', data);
+    dispatch('coupon/ACTION_ADD_BET', data);
     // eslint-disable-next-line no-await-in-loop
     const betAdded = await awaiter(() => getStakeCount() === 1, 1000, 50);
 
