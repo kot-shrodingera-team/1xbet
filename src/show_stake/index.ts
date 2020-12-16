@@ -18,12 +18,6 @@ const showStake = async (): Promise<void> => {
   localStorage.setItem('couponOpening', '1');
   couponOpenning = true;
   try {
-    if (!checkUrl()) {
-      log('Открыта не страница конторы (или зеркала)', 'crimson');
-      window.location.href = new URL(worker.BookmakerMainUrl).href;
-      throw new NewUrlError('Открывает страницу БК');
-    }
-
     await authStateReady();
     worker.Islogin = checkAuth();
     worker.JSLogined();
