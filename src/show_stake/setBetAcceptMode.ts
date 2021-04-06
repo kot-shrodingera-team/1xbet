@@ -2,10 +2,10 @@ import { log } from '@kot-shrodingera-team/germes-utils';
 
 const setBetAcceptMode = (): boolean => {
   const betAcceptModes = [
-    ...document.querySelectorAll(
+    ...document.querySelectorAll<HTMLElement>(
       '.coupon__bet-settings .multiselect__content li.multiselect__element span'
     ),
-  ] as HTMLElement[];
+  ];
   const mode = ((): HTMLElement => {
     switch (worker.StakeAcceptRuleShoulder) {
       case 0:

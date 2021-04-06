@@ -1,6 +1,8 @@
-import { log } from '@kot-shrodingera-team/germes-utils';
+import getCoefficientGenerator from '@kot-shrodingera-team/germes-generators/stake_info/getCoefficient';
+import { getWorkerParameter, log } from '@kot-shrodingera-team/germes-utils';
+// import getCoefficient from '../stake_info/getCoefficient';
 
-const afterSuccesfulStake = (): void => {
+const getResultCoefficientText = (): string => {
   const resultCoefficientTitle = [
     ...document.querySelectorAll('.coupon__text'),
   ].find((element) => element.textContent.trim() === 'Итоговый коэффициент');
@@ -9,7 +11,7 @@ const afterSuccesfulStake = (): void => {
       'Ошибка обновления коэффициента после успешной ставки: не найден заголовок блока итогового коэффициента',
       'crimson'
     );
-    return;
+    return null;
   }
   const resultCoefficientElement = resultCoefficientTitle.nextElementSibling;
   if (!resultCoefficientElement) {
@@ -17,18 +19,34 @@ const afterSuccesfulStake = (): void => {
       'Ошибка обновления коэффициента после успешной ставки: не найден итоговый коэффициент',
       'crimson'
     );
+    return null;
+  }
+  return resultCoefficientElement.textContent.trim();
+};
+
+const getResultCoefficient = getCoefficientGenerator({
+  coefficientSelector: '',
+  getCoefficientText: getResultCoefficientText,
+  // replaceDataArray: [
+  //   {
+  //     searchValue: '',
+  //     replaceValue: '',
+  //   },
+  // ],
+  // removeRegex: /[\s,']/g,
+  // coefficientRegex: /(\d+(?:\.\d+)?)/,
+  // context: () => document,
+});
+
+// const getResultCoefficient = getCoefficient;
+
+const afterSuccesfulStake = (): void => {
+  if (getWorkerParameter('fakeDoStake')) {
     return;
   }
-  const resultCoefficientText = resultCoefficientElement.textContent.trim();
-  const resultCoefficient = Number(resultCoefficientText);
-  if (Number.isNaN(resultCoefficient)) {
-    log(
-      `Ошибка обновления коэффициента после успешной ставки: непонятный формат коэффициента: "${resultCoefficientText}"`,
-      'crimson'
-    );
-    return;
-  }
-  if (resultCoefficient !== worker.StakeInfo.Coef) {
+  log('Обновление итогового коэффициента', 'steelblue');
+  const resultCoefficient = getResultCoefficient();
+  if (resultCoefficient && resultCoefficient !== worker.StakeInfo.Coef) {
     log(
       `Коеффициент изменился: ${worker.StakeInfo.Coef} => ${resultCoefficient}`,
       'orange'

@@ -1,8 +1,14 @@
-import { awaiter, log } from '@kot-shrodingera-team/germes-utils';
+import {
+  log,
+  repeatingOpenBet,
+  sleep,
+} from '@kot-shrodingera-team/germes-utils';
+import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
+import { maximumStakeReady } from '../stake_info/getMaximumStake';
 import getStakeCount from '../stake_info/getStakeCount';
-import JsFailError from './errors/jsFailError';
 
 const openBet = async (): Promise<void> => {
+  // Получение данных из меты
   const {
     gameid: gameId,
     // marketId,
@@ -26,6 +32,7 @@ const openBet = async (): Promise<void> => {
     SSI: subSportId,
   } = JSON.parse(worker.BetId);
 
+  // Формирование данных для поиска
   const data = {
     bet: {
       ACT: 0,
@@ -69,22 +76,39 @@ const openBet = async (): Promise<void> => {
   log('Есть диспетчер', 'white', true);
   const { dispatch } = store_global;
 
-  const maxTryCount = 5;
-  for (let i = 1; i <= maxTryCount; i += 1) {
+  // Открытие ставки, проверка, что ставка попала в купон
+  const openingAction = async () => {
     dispatch('coupon/ACTION_ADD_BET', data);
-    // eslint-disable-next-line no-await-in-loop
-    const betAdded = await awaiter(() => getStakeCount() === 1, 1000, 50);
+  };
+  await repeatingOpenBet(openingAction, getStakeCount, 5, 1000, 50);
 
-    if (!betAdded) {
-      if (i === maxTryCount) {
-        throw new JsFailError('Ставка так и не попала в купон');
-      }
-      log(`Ставка не попала в купон (попытка ${i})`, 'steelblue');
-    } else {
-      log('Ставка попала в купон', 'steelblue');
-      break;
-    }
+  const maximumStakeLoaded = await maximumStakeReady();
+  if (!maximumStakeLoaded) {
+    throw new JsFailError('Максимальная ставка не появилась');
   }
+  await sleep(0);
+
+  const teamOneSelector = '.c-bet-box__col > .c-bet-box__row:nth-child(1)';
+  const teamTwoSelector = '.c-bet-box__col > .c-bet-box__row:nth-child(2)';
+  const betNameSelector = '.c-bet-box__market';
+
+  const teamOneElement = document.querySelector(teamOneSelector);
+  if (!teamOneElement) {
+    throw new JsFailError('Не найдено название первой команды');
+  }
+  const teamTwoElement = document.querySelector(teamTwoSelector);
+  if (!teamTwoElement) {
+    throw new JsFailError('Не найдено название второй команды');
+  }
+  const betNameElement = document.querySelector(betNameSelector);
+  if (!betNameElement) {
+    throw new JsFailError('Не найдена роспись открытой ставки');
+  }
+
+  const teamOne = teamOneElement.textContent.trim();
+  const teamTwo = teamTwoElement.textContent.trim();
+  const betName = betNameElement.textContent.trim();
+  log(`Открыта ставка\n${teamOne} - ${teamTwo}\n${betName}`, 'steelblue');
 };
 
 export default openBet;

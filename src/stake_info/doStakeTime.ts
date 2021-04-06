@@ -1,9 +1,7 @@
-let doStakeTime: Date = null;
-
 export const getDoStakeTime = (): Date => {
-  return doStakeTime;
+  return window.germesData.doStakeTime;
 };
 
 export const clearDoStakeTime = (): void => {
-  doStakeTime = new Date();
+  window.germesData.doStakeTime = new Date();
 };

@@ -1,18 +1,20 @@
 import authorizeGenerator from '@kot-shrodingera-team/germes-generators/initialization/authorize';
 import {
-  getElement,
-  getPhoneCountry,
+  getPhoneLoginData,
   log,
+  getElement,
 } from '@kot-shrodingera-team/germes-utils';
-import { balanceReady, updateBalance } from '../stake_info/getBalance';
+import { authElementSelector } from '../stake_info/checkAuth';
+import { updateBalance, balanceReady } from '../stake_info/getBalance';
+// import afterSuccesfulLogin from './afterSuccesfulLogin';
 
 const setLoginType = async (): Promise<boolean> => {
-  const phoneCountry = getPhoneCountry();
-  if (phoneCountry) {
+  const phoneLoginData = getPhoneLoginData();
+  if (phoneLoginData) {
     log('Переключаем на ввод телефона', 'orange');
-    const phoneButton = document.querySelector(
+    const phoneButton = document.querySelector<HTMLElement>(
       '.custom-functional-button'
-    ) as HTMLElement;
+    );
     if (!phoneButton) {
       log('Не найдена кнопка переключения на вход по телефону', 'crimson');
       return false;
@@ -31,18 +33,25 @@ const authorize = authorizeGenerator({
   openForm: {
     selector: '.curloginDropTop',
     openedSelector: '.auth:not([style="display: none;"])',
+    // loopCount: 10,
+    // triesInterval: 1000,
+    // afterOpenDelay: 0,
   },
   setLoginType,
   loginInputSelector: '#auth_id_email, [id^="auth_phone_number]',
   passwordInputSelector: '#auth-form-password',
   submitButtonSelector: '.auth-button',
+  // inputType: 'fireEvent',
+  // fireEventNames: ['input'],
   beforeSubmitDelay: 1000,
   captchaSelector: '[title="recaptcha challenge"]',
   loginedWait: {
+    loginedSelector: authElementSelector,
     balanceReady,
-    loginedSelector: '.submenu_link[href="office/account/"]',
     updateBalance,
+    // afterSuccesfulLogin,
   },
+  // context: () => document,
 });
 
 export default authorize;
