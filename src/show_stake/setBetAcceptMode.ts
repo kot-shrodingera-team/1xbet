@@ -1,6 +1,6 @@
 import { log } from '@kot-shrodingera-team/germes-utils';
 
-const setBetAcceptMode = (): boolean => {
+const setBetAcceptMode = async (): Promise<boolean> => {
   const betAcceptModes = [
     ...document.querySelectorAll<HTMLElement>(
       '.coupon__bet-settings .multiselect__content li.multiselect__element span'
