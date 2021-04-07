@@ -1,9 +1,9 @@
 {
   "name": "@kot-shrodingera-team/1xbet",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "devDependencies": {
     "@kot-shrodingera-team/eslint-config-germes": "^1.0.5",
-    "@kot-shrodingera-team/germes-generators": "^1.0.89",
+    "@kot-shrodingera-team/germes-generators": "^1.0.90",
     "@kot-shrodingera-team/germes-utils": "^1.0.25",
     "@kot-shrodingera-team/prettier-config-germes": "^1.0.1",
     "@kot-shrodingera-team/rollup-config-germes": "^1.0.4",
