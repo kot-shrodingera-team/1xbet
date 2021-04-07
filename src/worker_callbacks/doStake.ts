@@ -6,10 +6,10 @@ import { clearDoStakeTime } from '../stake_info/doStakeTime';
 //   return true;
 // };
 
-// const postCheck = (): boolean => {
-//   window.germesData.betProcessingStep = 'beforeStart';
-//   return true;
-// };
+const postCheck = (): boolean => {
+  window.germesData.betProcessingStep = 'beforeStart';
+  return true;
+};
 
 const doStake = doStakeGenerator({
   // preCheck,
@@ -22,7 +22,7 @@ const doStake = doStakeGenerator({
   // ],
   // disabledCheck: false,
   getCoefficient,
-  // postCheck,
+  postCheck,
   clearDoStakeTime,
   // context: () => document,
 });
