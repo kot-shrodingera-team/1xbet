@@ -88,27 +88,36 @@ const openBet = async (): Promise<void> => {
   }
   await sleep(0);
 
-  const teamOneSelector = '.c-bet-box__col > .c-bet-box__row:nth-child(1)';
-  const teamTwoSelector = '.c-bet-box__col > .c-bet-box__row:nth-child(2)';
+  const eventNameSelector = '.c-bet-box__teams > .c-bet-box__row_full';
+  const teamOneSelector =
+    '.c-bet-box__teams > div >.c-bet-box__row:nth-child(1)';
+  const teamTwoSelector =
+    '.c-bet-box__teams > div > .c-bet-box__row:nth-child(2)';
   const betNameSelector = '.c-bet-box__market';
 
-  const teamOneElement = document.querySelector(teamOneSelector);
-  if (!teamOneElement) {
-    throw new JsFailError('Не найдено название первой команды');
-  }
+  const eventNameElement = document.querySelector(eventNameSelector);
   const teamTwoElement = document.querySelector(teamTwoSelector);
-  if (!teamTwoElement) {
-    throw new JsFailError('Не найдено название второй команды');
-  }
+  const teamOneElement = document.querySelector(teamOneSelector);
   const betNameElement = document.querySelector(betNameSelector);
+
+  if (!eventNameElement && (!teamTwoElement || !teamOneElement)) {
+    throw new JsFailError('Не найдено название события');
+  }
   if (!betNameElement) {
     throw new JsFailError('Не найдена роспись открытой ставки');
   }
 
-  const teamOne = teamOneElement.textContent.trim();
-  const teamTwo = teamTwoElement.textContent.trim();
+  const eventName = (() => {
+    if (eventNameElement) {
+      return eventNameElement.textContent.trim();
+    }
+    const teamOne = teamOneElement.textContent.trim();
+    const teamTwo = teamTwoElement.textContent.trim();
+    return `${teamOne} - ${teamTwo}`;
+  })();
   const betName = betNameElement.textContent.trim();
-  log(`Открыта ставка\n${teamOne} - ${teamTwo}\n${betName}`, 'steelblue');
+
+  log(`Открыта ставка\n${eventName}\n${betName}`, 'steelblue');
 };
 
 export default openBet;
