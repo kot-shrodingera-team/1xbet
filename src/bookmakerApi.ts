@@ -15,4 +15,12 @@ declare global {
   }
 }
 
+export const clearGermesData = (): void => {
+  window.germesData = {
+    betProcessingStep: undefined,
+    betProcessingAdditionalInfo: undefined,
+    doStakeTime: undefined,
+  };
+};
+
 export default {};
