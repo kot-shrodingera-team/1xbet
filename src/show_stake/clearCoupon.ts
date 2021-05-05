@@ -1,5 +1,5 @@
 import clearCouponGenerator from '@kot-shrodingera-team/germes-generators/show_stake/clearCoupon';
-import { log } from '@kot-shrodingera-team/germes-utils';
+import { awaiter, log } from '@kot-shrodingera-team/germes-utils';
 import getStakeCount from '../stake_info/getStakeCount';
 
 const preCheck = async (): Promise<boolean> => {
@@ -15,6 +15,12 @@ const preCheck = async (): Promise<boolean> => {
     }
     okButton.click();
     log('Нажимаем кнопку ОК', 'orange');
+    const couponModalDisappeared = await awaiter(() => getStakeCount() === 0);
+    if (!couponModalDisappeared) {
+      log('Сообщение об супешной ставке не закрылось', 'crimson');
+      return false;
+    }
+    log('Сообщение об супешной ставке закрылось', 'steelblue');
   }
   return true;
 };
