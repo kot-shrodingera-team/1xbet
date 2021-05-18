@@ -1,5 +1,5 @@
 import checkCouponLoadingGenerator from '@kot-shrodingera-team/germes-generators/worker_callbacks/checkCouponLoading';
-import { log, getElement } from '@kot-shrodingera-team/germes-utils';
+import { log, getElement, sleep } from '@kot-shrodingera-team/germes-utils';
 // import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
 // import openBet from '../show_stake/openBet';
 import { getDoStakeTime } from '../stake_info/doStakeTime';
@@ -112,6 +112,23 @@ const asyncCheck = async () => {
       }
       cancelButton.click();
       return error();
+    }
+    if (
+      errorText.startsWith(
+        'Ставка на данное событие уже принималась. Хотите продолжить провод новой ставки?'
+      )
+    ) {
+      log(
+        'Ставка на данное событие уже принималась. Соглашаемся с повторным проводом',
+        'orange'
+      );
+      const okButton = document.querySelector<HTMLElement>('.swal2-confirm');
+      if (!okButton) {
+        return error('Не найдена кнопка "ОК" во всплывающем окне');
+      }
+      await sleep(1000); // Чтобы успело исчезнуть сообщение об ошибке
+      asyncCheck();
+      return null;
     }
     const okButton = document.querySelector<HTMLElement>('.swal2-confirm');
     if (!okButton) {
