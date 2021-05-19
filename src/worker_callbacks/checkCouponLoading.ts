@@ -126,6 +126,7 @@ const asyncCheck = async () => {
       if (!okButton) {
         return error('Не найдена кнопка "ОК" во всплывающем окне');
       }
+      okButton.click();
       await sleep(1000); // Чтобы успело исчезнуть сообщение об ошибке
       asyncCheck();
       return null;
