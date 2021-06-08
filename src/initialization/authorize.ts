@@ -38,7 +38,7 @@ const authorize = authorizeGenerator({
     // afterOpenDelay: 0,
   },
   setLoginType,
-  loginInputSelector: '#auth_id_email, [id^="auth_phone_number]',
+  loginInputSelector: '#auth_id_email, [id^="auth_phone_number"]',
   passwordInputSelector: '#auth-form-password',
   submitButtonSelector: '.auth-button',
   // inputType: 'fireEvent',
