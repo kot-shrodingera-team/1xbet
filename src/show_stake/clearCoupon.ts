@@ -17,10 +17,10 @@ const preCheck = async (): Promise<boolean> => {
     log('Нажимаем кнопку ОК', 'orange');
     const couponModalDisappeared = await awaiter(() => getStakeCount() === 0);
     if (!couponModalDisappeared) {
-      log('Сообщение об супешной ставке не закрылось', 'crimson');
+      log('Сообщение об успешной ставке не закрылось', 'crimson');
       return false;
     }
-    log('Сообщение об супешной ставке закрылось', 'steelblue');
+    log('Сообщение об успешной ставке закрылось', 'steelblue');
   }
   return true;
 };
