@@ -20,7 +20,7 @@ const setLoginType = async (): Promise<boolean> => {
       return false;
     }
     phoneButton.click();
-    const phoneInput = await getElement('[id^="auth_phone_number]');
+    const phoneInput = await getElement('[id^="auth_phone_number"]');
     if (!phoneInput) {
       log('Не появилось поле ввода телефона', 'crimson');
       return false;
