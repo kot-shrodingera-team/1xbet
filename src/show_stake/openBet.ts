@@ -28,7 +28,7 @@ const openBet = async (): Promise<void> => {
     Opp1Img: Opp1Image,
     Opp2Img: Opp2Image,
     NG: nameGroup,
-    NB: nameBet,
+    NBs: nameBet,
     SSI: subSportId,
   } = JSON.parse(worker.BetId);
 
