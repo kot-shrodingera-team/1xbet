@@ -20,14 +20,14 @@ const checkStakeEnabled = checkStakeEnabledGenerator({
   errorsCheck: [
     {
       selector: '.c-bet-box--blocked',
-      message: 'box--blocked',
+      message: 'заблокирована',
     },
     {
       selector: '.error__message-container',
-      message: 'error__message',
+      message: 'есть ошибка',
     },
   ],
-  context: () => document,
+  // context: () => document,
 });
 
 export default checkStakeEnabled;

@@ -6,9 +6,22 @@ import {
 import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
 import { maximumStakeReady } from '../stake_info/getMaximumStake';
 import getStakeCount from '../stake_info/getStakeCount';
+import clearCoupon from './clearCoupon';
 
 const openBet = async (): Promise<void> => {
-  // Получение данных из меты
+  /* ======================================================================== */
+  /*                              Очистка купона                              */
+  /* ======================================================================== */
+
+  const couponCleared = await clearCoupon();
+  if (!couponCleared) {
+    throw new JsFailError('Не удалось очистить купон');
+  }
+
+  /* ======================================================================== */
+  /*                      Формирование данных для поиска                      */
+  /* ======================================================================== */
+
   const {
     gameid: gameId,
     // marketId,
@@ -32,7 +45,6 @@ const openBet = async (): Promise<void> => {
     SSI: subSportId,
   } = JSON.parse(worker.BetId);
 
-  // Формирование данных для поиска
   const data = {
     bet: {
       ACT: 0,
@@ -70,23 +82,33 @@ const openBet = async (): Promise<void> => {
     is_skip_one_click: false,
   };
 
-  if (!store_global || !store_global.dispatch) {
+  if (!window.store_global || !window.store_global.dispatch) {
     throw new JsFailError('Не найден диспетчер');
   }
-  log('Есть диспетчер', 'white', true);
-  const { dispatch } = store_global;
+  const { dispatch } = window.store_global;
 
-  // Открытие ставки, проверка, что ставка попала в купон
+  /* ======================================================================== */
+  /*           Открытие ставки, проверка, что ставка попала в купон           */
+  /* ======================================================================== */
+
   const openingAction = async () => {
     dispatch('coupon/ACTION_ADD_BET', data);
   };
   await repeatingOpenBet(openingAction, getStakeCount, 5, 1000, 50);
 
+  /* ======================================================================== */
+  /*                  Ожидание появления максимальной ставки                  */
+  /* ======================================================================== */
+
   const maximumStakeLoaded = await maximumStakeReady();
   if (!maximumStakeLoaded) {
     throw new JsFailError('Максимальная ставка не появилась');
   }
-  await sleep(0);
+  await sleep(0); // Чтобы успели обновится данные в купоне? желательно перепроверить нужность
+
+  /* ======================================================================== */
+  /*                    Вывод информации об открытой ставке                   */
+  /* ======================================================================== */
 
   const eventNameSelector = '.c-bet-box__teams > .c-bet-box__row_full';
   const teamOneSelector =

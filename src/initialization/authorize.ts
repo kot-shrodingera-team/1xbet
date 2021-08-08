@@ -3,12 +3,13 @@ import {
   getPhoneLoginData,
   log,
   getElement,
+  // resolveRecaptcha,
 } from '@kot-shrodingera-team/germes-utils';
 import { authElementSelector } from '../stake_info/checkAuth';
 import { updateBalance, balanceReady } from '../stake_info/getBalance';
 // import afterSuccesfulLogin from './afterSuccesfulLogin';
 
-const setLoginType = async (): Promise<boolean> => {
+const preInputCheck = async (): Promise<boolean> => {
   const phoneLoginData = getPhoneLoginData();
   if (phoneLoginData) {
     log('Переключаем на ввод телефона', 'orange');
@@ -29,15 +30,33 @@ const setLoginType = async (): Promise<boolean> => {
   return true;
 };
 
+// const beforeSubmitCheck = async (): Promise<boolean> => {
+//   // const recaptchaIFrame = await getElement('iframe[title="reCAPTCHA"]', 1000);
+//   // if (recaptchaIFrame) {
+//   //   log('Есть капча. Пытаемся решить', 'orange');
+//   //   try {
+//   //     await resolveRecaptcha();
+//   //   } catch (e) {
+//   //     if (e instanceof Error) {
+//   //       log(e.message, 'red');
+//   //     }
+//   //     return false;
+//   //   }
+//   // } else {
+//   //   log('Нет капчи', 'steelblue');
+//   // }
+//   return true;
+// };
+
 const authorize = authorizeGenerator({
   openForm: {
     selector: '.curloginDropTop',
     openedSelector: '.auth:not([style="display: none;"])',
-    // loopCount: 10,
-    // triesInterval: 1000,
+    loopCount: 10,
+    triesInterval: 2000,
     // afterOpenDelay: 0,
   },
-  setLoginType,
+  preInputCheck,
   loginInputSelector: '#auth_id_email, [id^="auth_phone_number"]',
   passwordInputSelector: '#auth-form-password',
   submitButtonSelector: '.auth-button',
@@ -47,6 +66,7 @@ const authorize = authorizeGenerator({
   captchaSelector: '[title="recaptcha challenge"]',
   loginedWait: {
     loginedSelector: authElementSelector,
+    timeout: 5000,
     balanceReady,
     updateBalance,
     // afterSuccesfulLogin,

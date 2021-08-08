@@ -1,12 +1,12 @@
-import { log } from '@kot-shrodingera-team/germes-utils';
+import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
 
-const setBetAcceptMode = async (): Promise<boolean> => {
+const setBetAcceptMode = async (): Promise<void> => {
   const betAcceptModes = [
     ...document.querySelectorAll<HTMLElement>(
       '.coupon__bet-settings .multiselect__content li.multiselect__element span'
     ),
   ];
-  const mode = ((): HTMLElement => {
+  const mode = (() => {
     switch (worker.StakeAcceptRuleShoulder) {
       case 0:
         return betAcceptModes.find(
@@ -25,11 +25,9 @@ const setBetAcceptMode = async (): Promise<boolean> => {
     }
   })();
   if (!mode) {
-    log('Не найдена нужная опция режима принятия ставки', 'crimson');
-    return false;
+    throw new JsFailError('Не найдена нужная опция режима принятия ставки');
   }
   mode.click();
-  return true;
 };
 
 export default setBetAcceptMode;

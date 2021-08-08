@@ -1,5 +1,11 @@
-import config from './node_modules/@kot-shrodingera-team/rollup-config-germes/rollup.config';
+import typescript from '@rollup/plugin-typescript';
+import json from '@rollup/plugin-json';
 
 export default {
-  ...config,
+  input: './src/index.ts',
+  output: {
+    format: 'es',
+    file: './dist/index.js',
+  },
+  plugins: [typescript(), json()],
 };

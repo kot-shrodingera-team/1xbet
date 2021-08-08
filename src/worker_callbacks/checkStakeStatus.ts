@@ -2,7 +2,6 @@ import checkStakeStatusGenerator from '@kot-shrodingera-team/germes-generators/w
 import { updateBalance } from '../stake_info/getBalance';
 
 const checkStakeStatus = checkStakeStatusGenerator({
-  getProcessingStep: () => window.germesData.betProcessingStep,
   updateBalance,
 });
 

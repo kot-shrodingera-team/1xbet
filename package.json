@@ -1,26 +1,24 @@
 {
   "name": "@kot-shrodingera-team/1xbet",
   "version": "1.1.12",
+  "dependencies": {
+    "@kot-shrodingera-team/germes-generators": "1.1.13",
+    "@kot-shrodingera-team/germes-utils": "1.0.60",
+    "@kot-shrodingera-team/worker-declaration": "1.0.11"
+  },
   "devDependencies": {
-    "@kot-shrodingera-team/eslint-config-germes": "^1.0.5",
-    "@kot-shrodingera-team/germes-generators": "^1.0.92",
-    "@kot-shrodingera-team/germes-utils": "^1.0.25",
-    "@kot-shrodingera-team/prettier-config-germes": "^1.0.1",
-    "@kot-shrodingera-team/rollup-config-germes": "^1.0.4",
-    "@kot-shrodingera-team/typescript-config-germes": "^1.0.3",
-    "@kot-shrodingera-team/worker-declaration": "^1.0.8",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-typescript": "^5.0.2",
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "eslint": "^7.8.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-config-airbnb-typescript": "^9.0.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-import-resolver-typescript": "^2.3.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-prettier": "^3.1.4",
-    "prettier": "^2.1.1",
-    "rollup": "^2.26.9",
-    "typescript": "^4.0.2"
+    "@rollup/plugin-json": "4.1.0",
+    "@rollup/plugin-typescript": "8.2.1",
+    "@typescript-eslint/eslint-plugin": "4.26.0",
+    "eslint": "7.28.0",
+    "eslint-config-airbnb-base": "14.2.1",
+    "eslint-config-airbnb-typescript": "12.3.1",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-import-resolver-typescript": "2.4.0",
+    "eslint-plugin-import": "2.23.4",
+    "eslint-plugin-prettier": "3.4.0",
+    "prettier": "2.3.1",
+    "rollup": "2.51.0",
+    "typescript": "4.2.4"
   }
 }

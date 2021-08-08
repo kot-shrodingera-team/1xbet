@@ -3,9 +3,8 @@ import checkAuthGenerator, {
 } from '@kot-shrodingera-team/germes-generators/stake_info/checkAuth';
 
 export const noAuthElementSelector = '.curloginDropTop';
-// .top-acc__btn_office для клона https://xparibet.com/
 export const authElementSelector =
-  '.submenu_link[href="office/account/"], .top-acc__btn_office';
+  '.submenu_link[href="office/account/"], .top-acc__btn_office'; // .top-acc__btn_office для клона https://xparibet.com/
 
 export const authStateReady = authStateReadyGenerator({
   noAuthElementSelector,
