@@ -9,6 +9,8 @@ import {
   text,
   // sendTGBotMessage,
   sleep,
+  getWorkerParameter,
+  stakeInfoString,
 } from '@kot-shrodingera-team/germes-utils';
 import { StateMachine } from '@kot-shrodingera-team/germes-utils/stateMachine';
 
@@ -101,6 +103,38 @@ const asyncCheck = async () => {
               getElement(betPlacedSelector, getRemainingTimeout()),
           };
           return;
+        }
+        if (
+          /Не удалось выполнить ставку. Проверка событий не прошла/i.test(
+            errorText
+          )
+        ) {
+          if (getWorkerParameter('EventsCheckFailedBlock')) {
+            log(
+              'В настройках бк включена опция паузы при ошибке проверки событий',
+              'orange'
+            );
+            if (worker.SetBookmakerPaused(true)) {
+              worker.Helper.SendInformedMessage(
+                `В ${window.germesData.bookmakerName} произошла ошибка принятия ставки:\n` +
+                  `${errorText}\n` +
+                  `В настройках бк включена опция паузы при ошибке проверки событий\n` +
+                  `БК успешно поставлена на паузу\n` +
+                  `${stakeInfoString()}`
+              );
+            } else {
+              worker.Helper.SendInformedMessage(
+                `В ${window.germesData.bookmakerName} произошла ошибка принятия ставки:\n` +
+                  `${errorText}\n` +
+                  `В настройках бк включена опция паузы при ошибке проверки событий\n` +
+                  `БК НЕ УДАЛОСЬ поставить на паузу\n` +
+                  `${stakeInfoString()}`
+              );
+            }
+            window.germesData.stopBetProcessing();
+            checkCouponLoadingError({});
+            machine.end = true;
+          }
         }
         // worker.Helper.SendInformedMessage(errorText);
         // sendTGBotMessage(
