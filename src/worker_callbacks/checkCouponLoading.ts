@@ -147,6 +147,8 @@ const asyncCheck = async () => {
           checkCouponLoadingError({
             botMessage: 'Не найдена кнопка "ОК" во всплывающем окне',
           });
+          machine.end = true;
+          return;
         }
         okButton.click();
         checkCouponLoadingError({});
