@@ -7,7 +7,7 @@ import {
   checkCouponLoadingError,
   checkCouponLoadingSuccess,
   text,
-  // sendTGBotMessage,
+  sendTGBotMessage,
   sleep,
   getWorkerParameter,
   stakeInfoString,
@@ -135,6 +135,22 @@ const asyncCheck = async () => {
             checkCouponLoadingError({});
             machine.end = true;
           }
+        }
+        if (
+          /Произошла ошибка. Возможно ваша ставка прошла, проверьте историю ставок./i.test(
+            errorText
+          )
+        ) {
+          worker.Helper.SendInformedMessage(
+            `В ${window.germesData.bookmakerName} произошла ошибка принятия ставки:\n` +
+              `${errorText}\n` +
+              `${stakeInfoString()}`
+          );
+          sendTGBotMessage(
+            '1786981726:AAE35XkwJRsuReonfh1X2b8E7k9X4vknC_s',
+            126302051,
+            errorText
+          );
         }
         // worker.Helper.SendInformedMessage(errorText);
         // sendTGBotMessage(
