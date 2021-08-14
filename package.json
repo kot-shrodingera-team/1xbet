@@ -2,9 +2,9 @@
   "name": "@kot-shrodingera-team/1xbet",
   "version": "1.1.15",
   "dependencies": {
-    "@kot-shrodingera-team/germes-generators": "1.1.14",
-    "@kot-shrodingera-team/germes-utils": "1.0.61",
-    "@kot-shrodingera-team/worker-declaration": "1.0.11"
+    "@kot-shrodingera-team/germes-generators": "1.1.18",
+    "@kot-shrodingera-team/germes-utils": "1.0.67",
+    "@kot-shrodingera-team/worker-declaration": "1.0.13"
   },
   "devDependencies": {
     "@rollup/plugin-json": "4.1.0",

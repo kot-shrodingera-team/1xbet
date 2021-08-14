@@ -1,34 +1,27 @@
-import { getElement, log } from '@kot-shrodingera-team/germes-utils';
-import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
+import { log } from '@kot-shrodingera-team/germes-utils';
+import getLastBetId from '../helpers/getLastBetId';
+import goToCouponTab from '../helpers/goToCouponTab';
 
 const preOpenBet = async (): Promise<void> => {
+  /* ======================================================================== */
+  /*            Обновление номера купона последней успешной ставки            */
+  /* ======================================================================== */
+
+  if (worker.GetSessionData('1xbet.LastBetId') === null) {
+    log('Обновляем номер купона последней успешной ставки', 'darksalmon', true);
+    const lastBetId = await getLastBetId();
+    if (lastBetId === null) {
+      worker.SetSessionData('1xbet.LastBetId', 'null');
+    } else {
+      worker.SetSessionData('1xbet.LastBetId', lastBetId);
+    }
+  }
+
   /* ======================================================================== */
   /*                   Переключение на вкладку купона ставок                  */
   /* ======================================================================== */
 
-  const couponTab = await getElement<HTMLElement>(
-    '.c-tabs__header > button:first-child'
-  );
-  if (!couponTab.classList.contains('c-tabs__item--active')) {
-    log('Открыта не вкладка купона ставок', 'crimson');
-    log('Открываем вкладку купона ставок', 'orange');
-    couponTab.click();
-    await Promise.race([
-      getElement('.coupon__no-bets', 5000),
-      getElement('.c-bet-box:not(.c-bet-box--done)', 5000),
-    ]);
-    const emptyCoupon = document.querySelector('.coupon__no-bets');
-    const couponBet = document.querySelector(
-      '.c-bet-box:not(.c-bet-box--done)'
-    );
-    if (emptyCoupon || couponBet) {
-      log('Переключились на вкладку купона ставок', 'steelblue');
-    } else {
-      throw new JsFailError(
-        'Не удалось переключиться на вкладку купона ставок'
-      );
-    }
-  }
+  await goToCouponTab();
 };
 
 export default preOpenBet;

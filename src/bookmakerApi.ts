@@ -8,11 +8,8 @@ declare global {
 }
 
 export const clearGermesData = (): void => {
-  if (window.germesData && window.germesData.updateMaximumIntervalId) {
-    clearInterval(window.germesData.updateMaximumIntervalId);
-  }
-  if (window.germesData && window.germesData.updateCoefIntervalId) {
-    clearInterval(window.germesData.updateCoefIntervalId);
+  if (window.germesData && window.germesData.updateManualDataIntervalId) {
+    clearInterval(window.germesData.updateManualDataIntervalId);
   }
   window.germesData = {
     bookmakerName: '1xbet',
@@ -27,10 +24,12 @@ export const clearGermesData = (): void => {
       window.germesData.betProcessingStep = 'error';
       window.germesData.stakeDisabled = true;
     },
-    updateMaximumIntervalId: undefined,
-    updateCoefIntervalId: undefined,
-    manualMax: undefined,
-    manualCoef: undefined,
+    updateManualDataIntervalId: undefined,
+    stopUpdateManualData: undefined,
+    manualMaximumStake: undefined,
+    manualCoefficient: undefined,
+    manualParameter: undefined,
+    manualStakeEnabled: undefined,
   };
 };
 
