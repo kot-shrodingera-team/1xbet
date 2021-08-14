@@ -54,7 +54,7 @@ const authorize = authorizeGenerator({
     openedSelector: '.auth:not([style="display: none;"])',
     loopCount: 10,
     triesInterval: 2000,
-    // afterOpenDelay: 0,
+    afterOpenDelay: 2000,
   },
   preInputCheck,
   loginInputSelector: '#auth_id_email, [id^="auth_phone_number"]',
@@ -63,7 +63,9 @@ const authorize = authorizeGenerator({
   // inputType: 'fireEvent',
   // fireEventNames: ['input'],
   beforeSubmitDelay: 1000,
-  captchaSelector: '[title="recaptcha challenge"]',
+  // beforeSubmitCheck,
+  captchaSelector:
+    'div[style*="visibility: visible;"] > div > iframe[title="проверка recaptcha"]',
   loginedWait: {
     loginedSelector: authElementSelector,
     timeout: 5000,
