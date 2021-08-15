@@ -14,7 +14,6 @@ import {
 } from '@kot-shrodingera-team/germes-utils';
 import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
 import { StateMachine } from '@kot-shrodingera-team/germes-utils/stateMachine';
-import getLastBetId from '../helpers/getLastBetId';
 import getLastBetsIds from '../helpers/getLastBetsIds';
 import goToCouponTab from '../helpers/goToCouponTab';
 
@@ -150,11 +149,6 @@ const asyncCheck = async () => {
               `${errorText}\n` +
               `${stakeInfoString()}`
           );
-          sendTGBotMessage(
-            '1786981726:AAE35XkwJRsuReonfh1X2b8E7k9X4vknC_s',
-            126302051,
-            errorText
-          );
           machine.promises = {
             checkBetInHistory: sleep(0),
           };
@@ -203,12 +197,13 @@ const asyncCheck = async () => {
             }
           }
           await sleep(1000);
+          worker.TakeScreenShot(false);
           const lastBetsIds = await getLastBetsIds();
-          await sleep(1000);
           worker.SetSessionData(
             '1xbet.LastBetsIds',
             JSON.stringify(lastBetsIds)
           );
+          await sleep(1000);
           worker.TakeScreenShot(false);
           if (lastBetsIds === []) {
             const message = 'Пустая история ставок после успешной ставки';
@@ -222,11 +217,8 @@ const asyncCheck = async () => {
             const message = `Номер купона принятой ставки (${lastBetId}) отсутствует в истории`;
             log(message, 'crimson');
             log(JSON.stringify(lastBetsIds));
-            sendTGBotMessage(
-              '1786981726:AAE35XkwJRsuReonfh1X2b8E7k9X4vknC_s',
-              126302051,
-              `message\n${JSON.stringify(lastBetsIds)}`
-            );
+            log('Очищаем сохранённую историю номеров купонов', 'orange');
+            worker.SetSessionData('1xbet.LastBetsIds', null);
           }
         } catch (error) {
           log(error.message, 'crimson');
@@ -251,10 +243,14 @@ const asyncCheck = async () => {
             return;
           }
           okButton.click();
-          const lastBetId = await getLastBetId();
+          const lastBetsIds = await getLastBetsIds();
+          worker.SetSessionData(
+            '1xbet.LastBetsids',
+            JSON.stringify(lastBetsIds)
+          );
           await sleep(1000);
           worker.TakeScreenShot(false);
-          if (lastBetId === null) {
+          if (lastBetsIds === []) {
             log('В истории нет ставок. Считаем ставку непринятой', 'steelblue');
             await goToCouponTab();
             checkCouponLoadingError({});
@@ -262,7 +258,7 @@ const asyncCheck = async () => {
             return;
           }
           const workerLastBetsIds = worker.GetSessionData('1xbet.LastBetsIds'); // В теории не может быть именно примитивом null
-          if (workerLastBetsIds === 'null') {
+          if (workerLastBetsIds === '[]') {
             log(
               'В истории не было ставок. Сейчас есть. Считаем ставку принятой',
               'steelblue'
@@ -274,9 +270,9 @@ const asyncCheck = async () => {
           const workerLastBetIdArray = JSON.parse(
             workerLastBetsIds
           ) as string[];
-          if (workerLastBetIdArray.includes(lastBetId)) {
+          if (workerLastBetIdArray.includes(lastBetsIds[0])) {
             log(
-              `В истории последняя ставка с новым номером (${lastBetId})\n
+              `В истории последняя ставка с новым номером (${lastBetsIds[0]})\n
               ${workerLastBetsIds}\n
               Считаем ставку принятой`,
               'steelblue'
@@ -286,7 +282,7 @@ const asyncCheck = async () => {
             return;
           }
           log(
-            `В истории последняя ставка уже была (${lastBetId})\n
+            `В истории последняя ставка уже была (${lastBetsIds[0]})\n
             ${workerLastBetsIds}\n
             Считаем ставку непринятой`,
             'steelblue'
