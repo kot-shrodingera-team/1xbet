@@ -66,6 +66,10 @@ const afterSuccesfulStake = (): void => {
   if (getWorkerParameter('fakeDoStake')) {
     return;
   }
+  if (window.germesData.checkBetInHistory) {
+    // Пока просто убрана проверка, если была проверка по истории
+    return;
+  }
   log('Обновление итогового коэффициента', 'steelblue');
   const resultCoefficient = getResultCoefficient();
   if (resultCoefficient && resultCoefficient !== worker.StakeInfo.Coef) {

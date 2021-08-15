@@ -14,7 +14,7 @@ const getLastBetId = async (): Promise<string> => {
     throw new JsFailError('Не дождались загрузки истории ставок (!)');
   }
   if (emptyBets) {
-    log('История ставок пуста', 'cadetblue', true);
+    log('История ставок пуста', 'steelblue');
     return null;
   }
   const lastBetIdElement = lastBet.querySelector(
@@ -31,11 +31,7 @@ const getLastBetId = async (): Promise<string> => {
     );
   }
   const lastBetId = lastBetIdMatch[1];
-  log(
-    `Номер купона последней успешной ставки: ${lastBetId}`,
-    'cadetblue',
-    true
-  );
+  log(`Номер купона последней успешной ставки: ${lastBetId}`, 'steelblue');
   return lastBetId;
 };
 

@@ -1,20 +1,22 @@
 import { log } from '@kot-shrodingera-team/germes-utils';
-import getLastBetId from '../helpers/getLastBetId';
+import getLastBetsIds from '../helpers/getLastBetsIds';
 import goToCouponTab from '../helpers/goToCouponTab';
 
 const preOpenBet = async (): Promise<void> => {
   /* ======================================================================== */
-  /*            Обновление номера купона последней успешной ставки            */
+  /*                Обновление номеров купонов успешных ставок                */
   /* ======================================================================== */
 
-  if (worker.GetSessionData('1xbet.LastBetId') === null) {
-    log('Обновляем номер купона последней успешной ставки', 'darksalmon', true);
-    const lastBetId = await getLastBetId();
-    if (lastBetId === null) {
-      worker.SetSessionData('1xbet.LastBetId', 'null');
-    } else {
-      worker.SetSessionData('1xbet.LastBetId', lastBetId);
-    }
+  const workerLastBetsIds = worker.GetSessionData('1xbet.LastBetsIds');
+  if (workerLastBetsIds === null) {
+    log('Обновляем номера купонов успешных ставок в истории', 'steelblue');
+    const lastBetsIds = await getLastBetsIds();
+    worker.SetSessionData('1xbet.LastBetsIds', JSON.stringify(lastBetsIds));
+  } else if (workerLastBetsIds === '[]') {
+    log('Нет номеров купонов успешных ставок (история пуста)', 'steelblue');
+  } else {
+    log('Номера купонов успешных ставок', 'steelblue', true);
+    log(JSON.stringify(workerLastBetsIds), 'white', true);
   }
 
   /* ======================================================================== */

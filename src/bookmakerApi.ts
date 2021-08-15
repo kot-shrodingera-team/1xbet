@@ -1,5 +1,7 @@
 declare global {
-  // interface GermesData {}
+  interface GermesData {
+    checkBetInHistory: boolean;
+  }
   interface Window {
     store_global: {
       dispatch: (action: string, data: Record<string, unknown>) => void;
@@ -30,6 +32,8 @@ export const clearGermesData = (): void => {
     manualCoefficient: undefined,
     manualParameter: undefined,
     manualStakeEnabled: undefined,
+
+    checkBetInHistory: undefined,
   };
 };
 
