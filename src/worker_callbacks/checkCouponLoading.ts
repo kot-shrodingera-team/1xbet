@@ -205,7 +205,7 @@ const asyncCheck = async () => {
           );
           await sleep(1000);
           worker.TakeScreenShot(false);
-          if (lastBetsIds === []) {
+          if (lastBetsIds.length === 0) {
             const message = 'Пустая история ставок после успешной ставки';
             sendTGBotMessage(
               '1786981726:AAE35XkwJRsuReonfh1X2b8E7k9X4vknC_s',
@@ -231,6 +231,8 @@ const asyncCheck = async () => {
       entry: async () => {
         window.germesData.checkBetInHistory = true;
         try {
+          await sleep(1000);
+          worker.TakeScreenShot(false);
           const okButton =
             document.querySelector<HTMLElement>('.swal2-confirm');
           if (!okButton) {
@@ -248,9 +250,7 @@ const asyncCheck = async () => {
             '1xbet.LastBetsids',
             JSON.stringify(lastBetsIds)
           );
-          await sleep(1000);
-          worker.TakeScreenShot(false);
-          if (lastBetsIds === []) {
+          if (lastBetsIds.length === 0) {
             log('В истории нет ставок. Считаем ставку непринятой', 'steelblue');
             await goToCouponTab();
             checkCouponLoadingError({});
@@ -270,7 +270,7 @@ const asyncCheck = async () => {
           const workerLastBetIdArray = JSON.parse(
             workerLastBetsIds
           ) as string[];
-          if (workerLastBetIdArray.includes(lastBetsIds[0])) {
+          if (!workerLastBetIdArray.includes(lastBetsIds[0])) {
             log(
               `В истории последняя ставка с новым номером (${lastBetsIds[0]})\n
               ${workerLastBetsIds}\n
