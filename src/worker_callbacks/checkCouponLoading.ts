@@ -7,14 +7,14 @@ import {
   checkCouponLoadingError,
   checkCouponLoadingSuccess,
   text,
-  sendTGBotMessage,
+  // sendTGBotMessage,
   sleep,
   getWorkerParameter,
   stakeInfoString,
 } from '@kot-shrodingera-team/germes-utils';
 import { JsFailError } from '@kot-shrodingera-team/germes-utils/errors';
 import { StateMachine } from '@kot-shrodingera-team/germes-utils/stateMachine';
-import getLastBetsIds from '../helpers/getLastBetsIds';
+import getLastBetId from '../helpers/getLastBetId';
 import goToCouponTab from '../helpers/goToCouponTab';
 
 const loaderSelector = '.coupon__preloader:not([style="display: none;"])';
@@ -194,31 +194,8 @@ const asyncCheck = async () => {
             } else {
               [, lastBetId] = lastBetIdMatch;
               log(`Номер купона: ${lastBetId}`, 'steelblue');
+              worker.SetSessionData('1xbet.LastBetId', lastBetId);
             }
-          }
-          await sleep(1000);
-          worker.TakeScreenShot(false);
-          const lastBetsIds = await getLastBetsIds();
-          worker.SetSessionData(
-            '1xbet.LastBetsIds',
-            JSON.stringify(lastBetsIds)
-          );
-          await sleep(1000);
-          worker.TakeScreenShot(false);
-          if (lastBetsIds.length === 0) {
-            const message = 'Пустая история ставок после успешной ставки';
-            sendTGBotMessage(
-              '1786981726:AAE35XkwJRsuReonfh1X2b8E7k9X4vknC_s',
-              126302051,
-              message
-            );
-            log(message, 'crimson');
-          } else if (lastBetId && !lastBetsIds.includes(lastBetId)) {
-            const message = `Номер купона принятой ставки (${lastBetId}) отсутствует в истории`;
-            log(message, 'crimson');
-            log(JSON.stringify(lastBetsIds));
-            log('Очищаем сохранённую историю номеров купонов', 'orange');
-            worker.SetSessionData('1xbet.LastBetsIds', null);
           }
         } catch (error) {
           log(error.message, 'crimson');
@@ -232,7 +209,9 @@ const asyncCheck = async () => {
         window.germesData.checkBetInHistory = true;
         try {
           await sleep(1000);
-          worker.TakeScreenShot(false);
+          if (!worker.JSCoefChange) {
+            worker.TakeScreenShot(false);
+          }
           const okButton =
             document.querySelector<HTMLElement>('.swal2-confirm');
           if (!okButton) {
@@ -245,46 +224,37 @@ const asyncCheck = async () => {
             return;
           }
           okButton.click();
-          const lastBetsIds = await getLastBetsIds();
-          worker.SetSessionData(
-            '1xbet.LastBetsids',
-            JSON.stringify(lastBetsIds)
-          );
-          if (lastBetsIds.length === 0) {
+          const lastBetId = await getLastBetId();
+          if (lastBetId === null) {
             log('В истории нет ставок. Считаем ставку непринятой', 'steelblue');
             await goToCouponTab();
             checkCouponLoadingError({});
             machine.end = true;
             return;
           }
-          const workerLastBetsIds = worker.GetSessionData('1xbet.LastBetsIds'); // В теории не может быть именно примитивом null
-          if (workerLastBetsIds === '[]') {
+          const workerLastBetId = worker.GetSessionData('1xbet.LastBetId'); // В теории не может быть именно примитивом null
+          if (workerLastBetId === 'null') {
             log(
-              'В истории не было ставок. Сейчас есть. Считаем ставку принятой',
+              `В истории не было ставок. Сейчас есть (${lastBetId}). Считаем ставку принятой`,
               'steelblue'
             );
+            worker.SetSessionData('1xbet.LastBetsids', lastBetId);
             checkCouponLoadingSuccess();
             machine.end = true;
             return;
           }
-          const workerLastBetIdArray = JSON.parse(
-            workerLastBetsIds
-          ) as string[];
-          if (!workerLastBetIdArray.includes(lastBetsIds[0])) {
+          if (Number(lastBetId) > Number(workerLastBetId)) {
             log(
-              `В истории последняя ставка с новым номером (${lastBetsIds[0]})\n
-              ${workerLastBetsIds}\n
-              Считаем ставку принятой`,
+              `Номер купона последней ставки в истории (${lastBetId}) больше номера купона последней успешной ставки (${workerLastBetId}). Считаем ставку принятой`,
               'steelblue'
             );
+            worker.SetSessionData('1xbet.LastBetsids', lastBetId);
             checkCouponLoadingSuccess();
             machine.end = true;
             return;
           }
           log(
-            `В истории последняя ставка уже была (${lastBetsIds[0]})\n
-            ${workerLastBetsIds}\n
-            Считаем ставку непринятой`,
+            `Номер купона последней ставки в истории (${lastBetId}) не больше номера купона последней успешной ставки (${workerLastBetId}). Считаем ставку непринятой`,
             'steelblue'
           );
           await goToCouponTab();

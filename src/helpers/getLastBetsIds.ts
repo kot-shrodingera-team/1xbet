@@ -4,8 +4,10 @@ import goToHistoryTab from './goToHistoryTab';
 
 const getLastBetsIds = async (): Promise<string[]> => {
   await goToHistoryTab();
-  await sleep(1000);
-  worker.TakeScreenShot(false);
+  if (!worker.JSCoefChange) {
+    await sleep(1000); // для скриншота
+    worker.TakeScreenShot(false);
+  }
   const emptyBets = document.querySelector(
     '.coupon__bets--opened .coupon__no-bets'
   );
