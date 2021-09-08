@@ -110,18 +110,19 @@ const asyncCheck = async () => {
         if (
           /Не удалось выполнить ставку. Проверка событий не прошла/i.test(
             errorText
-          )
+          ) ||
+          /Сумма ставки в данной валюте равна 0/i.test(errorText)
         ) {
           if (getWorkerParameter('EventsCheckFailedBlock')) {
             log(
-              'В настройках бк включена опция паузы при ошибке проверки событий',
+              'В настройках бк включена опция паузы при ошибке блока аккаунта',
               'orange'
             );
             if (worker.SetBookmakerPaused(true)) {
               worker.Helper.SendInformedMessage(
                 `В ${window.germesData.bookmakerName} произошла ошибка принятия ставки:\n` +
                   `${errorText}\n` +
-                  `В настройках бк включена опция паузы при ошибке проверки событий\n` +
+                  `В настройках бк включена опция паузы при ошибке блока аккаунта\n` +
                   `БК успешно поставлена на паузу\n` +
                   `${stakeInfoString()}`
               );
@@ -129,14 +130,12 @@ const asyncCheck = async () => {
               worker.Helper.SendInformedMessage(
                 `В ${window.germesData.bookmakerName} произошла ошибка принятия ставки:\n` +
                   `${errorText}\n` +
-                  `В настройках бк включена опция паузы при ошибке проверки событий\n` +
+                  `В настройках бк включена опция паузы при ошибке блока аккаунта\n` +
                   `БК НЕ УДАЛОСЬ поставить на паузу\n` +
                   `${stakeInfoString()}`
               );
             }
-            window.germesData.stopBetProcessing();
-            checkCouponLoadingError({});
-            machine.end = true;
+            window.germesData.stakeDisabled = true;
           }
         }
         if (
