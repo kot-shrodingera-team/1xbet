@@ -1,4 +1,5 @@
 import {
+  getWorkerParameter,
   log,
   repeatingOpenBet,
   sleep,
@@ -104,7 +105,11 @@ const openBet = async (): Promise<void> => {
   if (!maximumStakeLoaded) {
     throw new JsFailError('Максимальная ставка не появилась');
   }
-  await sleep(0); // Чтобы успели обновится данные в купоне? желательно перепроверить нужность
+
+  const afterOpenBetDelay = <number>(
+    (getWorkerParameter('afterOpenBetDelay', 'number') || 1000)
+  );
+  await sleep(afterOpenBetDelay);
 
   /* ======================================================================== */
   /*                    Вывод информации об открытой ставке                   */
